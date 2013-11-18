@@ -2,6 +2,12 @@
     Kairos.js
 */
 
+var chunk = {
+    text:       '',
+    position:   0,
+    endTime:    ''
+}
+
 var Kairos = function() {
 
     var lists           = [],
@@ -14,7 +20,6 @@ var Kairos = function() {
         }
 
         lists = JSON.parse( localStorage.getItem('lists') ).lists;
-
     }
 
     var updateStorage = function() {
@@ -51,10 +56,10 @@ var Kairos = function() {
                 if(t == 'add-chunk-form') {
 
                     // parse the chunk
-                    var chunk       = $2('.add-chunk-form [name="chunk"]').value,
-                        chunk_obj   = {};
+                    var text        = $2('.add-chunk-form [name="chunk"]').value,
+                        chunk_obj   = clone(chunk);
 
-                    chunk_obj.text = chunk;
+                    chunk_obj.text = text;
 
                     // get the list
                     var list = self.current_list;
