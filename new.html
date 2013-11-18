@@ -20,17 +20,18 @@
             <div class="main" role="main">
 
                 <h1><a href="index.html">Kairos</a></h1>
-
-                <a href="new.html">Add list</a>
-
-                <div class="lists">
-                    <h2>Your Lists</h2>
-
-                    <div class="your-lists">
-                        No lists!
-                    </div>
-                </div>
                 
+                <form action="add.html" class="add-list">
+                    <h2>New list</h2>
+
+                    <fieldset>
+                        <label>Title</label>
+                        <input type="text" name="title">
+                    </fieldset>
+
+                    <button type="submit">Submit</button>
+                </form>
+
             </div>
             
         </div>
@@ -41,7 +42,7 @@
         <script>
             var k = new Kairos();
             
-            k.showLists();
+            k.loadListeners();
         </script>
     </body>
 </html>
