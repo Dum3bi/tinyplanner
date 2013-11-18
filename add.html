@@ -21,11 +21,13 @@
 
                 <h1><a href="index.html">Kairos</a></h1>
                 
-                <form action="add.html" class="chunks-form">
+                <h2>Adding to <span class="editing-list"></span></h2>
+                
+                <form action="add.html" class="chunk-form">
                     <fieldset>
                         <div class="chunk">
-                            <label>Thing</label>
-                            <input type="text" name="thing">
+                            <label>Chunk</label>
+                            <input type="text" name="chunk">
                         </div>
                     </fieldset>
 
@@ -43,6 +45,15 @@
             var k = new Kairos();
             
             k.loadListeners();
+
+            var list_title = $2('.editing-list').innerHTML = loadPageVar('list');
+
+            var ff = document.createElement('input');
+            ff.setAttribute('type', 'hidden');
+            ff.setAttribute('name', 'list');
+            ff.setAttribute('value', list_title);
+
+            $2('.chunk-form fieldset').appendChild(ff);
         </script>
     </body>
 </html>

@@ -20,17 +20,23 @@
             <div class="main" role="main">
 
                 <h1><a href="index.html">Kairos</a></h1>
+
+                <h2>Viewing <span class="editing-list"></span></h2>
                 
-                <form action="#" class="chunks-form">
+                <form action="view.html" class="endtime-form" style="display:none">
                     <fieldset>
                         <div class="chunk">
-                            <label>Thing</label>
-                            <input type="text" name="thing">
+                            <label>Endtime</label>
+                            <input type="text" name="endtime" placeholder="e.g. Tomorrow at 6pm">
                         </div>
                     </fieldset>
 
-                    <a href="#" class="add-another">add another</a>
+                    <button type="submit">Submit</button>
                 </form>
+
+                <div class="chunk-list" style="display:none">
+                    
+                </div>
 
             </div>
             
@@ -43,6 +49,25 @@
             var k = new Kairos();
             
             k.loadListeners();
+
+            var list_title = $2('.editing-list').innerHTML = loadPageVar('list');
+
+            var ff = document.createElement('input');
+            ff.setAttribute('type', 'hidden');
+            ff.setAttribute('name', 'list');
+            ff.setAttribute('value', list_title);
+
+            $2('.endtime-form fieldset').appendChild(ff);
+
+            if( !k.getListEndTime(list_title) ) {
+                $2('.endtime-form').style.display = 'block';
+            }
+            else {
+                // populate the chunk list
+                k.showListChunks(list_title);
+
+                $2('.chunk-list').style.display = 'block';
+            }
         </script>
     </body>
 </html>

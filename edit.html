@@ -20,16 +20,18 @@
             <div class="main" role="main">
 
                 <h1><a href="index.html">Kairos</a></h1>
+
+                <h2>Editing <span class="editing-list"></span></h2>
                 
-                <form action="#" class="chunks-form">
+                <form action="edit.html" class="chunk-form">
                     <fieldset>
                         <div class="chunk">
-                            <label>Thing</label>
-                            <input type="text" name="thing">
+                            <label>Chunk</label>
+                            <input type="text" name="chunk">
                         </div>
                     </fieldset>
 
-                    <a href="#" class="add-another">add another</a>
+                    <button type="submit">Submit</button>
                 </form>
 
             </div>
@@ -44,7 +46,7 @@
             
             k.loadListeners();
 
-            console.log(loadPageVar('list'));
+            $2('.editing-list').innerHTML = loadPageVar('list');
         </script>
     </body>
 </html>

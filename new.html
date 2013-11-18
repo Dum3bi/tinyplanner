@@ -21,19 +21,64 @@
 
                 <h1><a href="index.html">Kairos</a></h1>
                 
-                <form action="add.html" class="add-list">
-                    <h2>New list</h2>
-
-                    <fieldset>
-                        <label>Title</label>
-                        <input type="text" name="title">
-                    </fieldset>
-
-                    <button type="submit">Submit</button>
-                </form>
+                <div class="template">
+                    
+                </div>
 
             </div>
             
+        </div>
+
+
+        <!-- Old School Templates -->
+        <div class="add-list-template hide">
+            <form action="add.html" class="add-list-form">
+                <h2>New list</h2>
+
+                <fieldset>
+                    <label>Title</label>
+                    <input type="text" name="list">
+                </fieldset>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div class="add-first-chunk-template hide">
+            <h2>Adding to <span class="editing-list"></span></h2>
+
+            <div class="chunk-list"></div>
+            
+            <form action="add.html" class="add-chunk-form">
+                <fieldset>
+                    <div class="chunk">
+                        <label>First</label>
+                        <input type="text" name="chunk">
+                    </div>
+                </fieldset>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div class="add-chunk-template hide">
+            <h2>Adding to <span class="editing-list"></span></h2>
+
+            <div class="chunk-list"></div>
+            
+            <form action="add.html" class="add-chunk-form">
+                <fieldset>
+                    <div class="chunk">
+                        <select name="position">
+                            <option value="1">Then</option>
+                            <option value="0">Meantime</option>
+                        </select>
+                        <input type="text" name="chunk">
+                    </div>
+                </fieldset>
+
+                <button type="submit">Submit</button>
+            </form>
         </div>
         
         <script src="_assets/js/helpers.js"></script>
@@ -42,6 +87,8 @@
         <script>
             var k = new Kairos();
             
+            $2('.template').innerHTML = $2('.add-list-template').cloneNode().innerHTML;
+
             k.loadListeners();
         </script>
     </body>
