@@ -10,6 +10,10 @@
    Base styles: opinionated defaults
    ========================================================================== */
 
+* {
+    box-sizing: border-box;
+}
+
 html,
 button,
 input,
@@ -37,19 +41,6 @@ html {
 ::selection {
     background: #b3d4fc;
     text-shadow: none;
-}
-
-/*
- * A better looking default horizontal rule
- */
-
-hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 1em 0;
-    padding: 0;
 }
 
 /*
@@ -88,14 +79,90 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+body {
+    font-family: 'helvetica neue', arial, sans-serif;
+    font-size: 100%;
+    font-weight: 200;
+    color: #fff;
+    background-color: rgb(88,111,129);
+}
 
+h1 a {
+    color: #fff;
+    text-decoration: none;
+}
 
-.container {
-    width: 800px;
-    margin: 50px auto 0 auto;
+h2 {
+    font-weight: 200;
+}
+
+a {
+    color: rgb(176,221,255);
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+form {
+    padding: 20px 15px;
+}
+
+input[type="text"] {
+    display: block;
+    width: 100%;
+    font-size: 1.4rem;
+    padding: 10px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
 }
 
 
+.container {
+    max-width: 40rem;
+    margin: 0 auto;
+}
+
+.add-list-form,
+.add-chunk-form {
+    background-color: rgb(81,98,115);
+    border-top: 3px solid rgb(60,75,90);
+}
+
+.add-chunk-form input {
+    border: none;
+}
+
+.chunk-list li {
+    font-size: 1.6rem;
+    border-top: 3px solid rgb(81,98,115);
+    padding: 20px 10px 20px 100px;
+    line-height: 1.1;
+}
+
+.handle {
+    float: right;
+    display: block;
+    background: url('../img/handle.png') 0 0 no-repeat;
+    width: 14px;
+    height: 10px;
+}
+
+.position {
+    display: inline-block;
+    vertical-align: top;
+    color: rgb(49,61,72);
+    font-size: 0.7rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 
 
 

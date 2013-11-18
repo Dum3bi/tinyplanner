@@ -2,6 +2,8 @@
     Kairos.js
 */
 
+'use strict'
+
 var chunk = {
     text:       '',
     position:   0,
@@ -215,7 +217,9 @@ var Kairos = function() {
                 var chunks = lists[i].chunks;
 
                 for (var i = 0; i < chunks.length; i++) {
-                    chunk_html += '<li>' + chunks[i].text + '</li>';
+                    var ct = $2('.chunk-template').cloneNode();
+                    ct.querySelector('.text').innerHTML = chunks[i].text;
+                    chunk_html += ct.innerHTML;
                 }
             }
             

@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html class="no-js">
+<html>
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         
-        <title>Codename Kairos</title>
+        <title>Tiny Planner</title>
 
         <meta name="description" content="">
-        <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="_assets/css/normalize.css">
         <link rel="stylesheet" href="_assets/css/main.css">
     </head>
     <body>
@@ -19,7 +18,7 @@
 
             <div class="main" role="main">
 
-                <h1><a href="index.html">Kairos</a></h1>
+                <h1><a href="index.html">Tiny Planner</a></h1>
                 
                 <div class="template">
                     
@@ -32,20 +31,19 @@
 
         <!-- Old School Templates -->
         <div class="add-list-template hide">
+
             <form action="add.html" class="add-list-form">
-                <h2>New list</h2>
 
                 <fieldset>
-                    <label>Title</label>
-                    <input type="text" name="list">
+                    <label>What’s the plan</label>
+                    <input type="text" name="list" autofocus required>
                 </fieldset>
 
-                <button type="submit">Submit</button>
             </form>
         </div>
 
         <div class="add-first-chunk-template hide">
-            <h2>Adding to <span class="editing-list"></span></h2>
+            <h2><span class="editing-list"></span></h2>
 
             <div class="chunk-list"></div>
             
@@ -53,32 +51,42 @@
                 <fieldset>
                     <div class="chunk">
                         <label>First</label>
-                        <input type="text" name="chunk">
+                        <input type="text" name="chunk" autofocus required>
                     </div>
                 </fieldset>
-
-                <button type="submit">Submit</button>
             </form>
         </div>
 
         <div class="add-chunk-template hide">
-            <h2>Adding to <span class="editing-list"></span></h2>
+            <h2><span class="editing-list"></span></h2>
 
             <div class="chunk-list"></div>
             
             <form action="add.html" class="add-chunk-form">
+
                 <fieldset>
                     <div class="chunk">
                         <select name="position">
                             <option value="1">Then</option>
                             <option value="0">Meantime</option>
                         </select>
-                        <input type="text" name="chunk">
+                        <input type="text" name="chunk" autofocus required>
                     </div>
                 </fieldset>
 
-                <button type="submit">Submit</button>
             </form>
+        </div>
+
+        <div class="chunk-template hide">
+            <li>
+               <div>
+                   <span class="handle"></span>
+                   <span class="position">Then</span>
+               </div>
+               <div>
+                   <span class="text"></span>
+               </div>
+            </li>
         </div>
         
         <script src="_assets/js/helpers.js"></script>
