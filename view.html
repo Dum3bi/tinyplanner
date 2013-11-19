@@ -22,7 +22,9 @@
 
                 <div class="template">
 
-                    <h2>Viewing <span class="editing-list"></span></h2>
+                    <h2><span class="editing-list"></span></h2>
+
+                    <div class="starttime"></div>
 
                     <div class="chunk-list"></div>
                     
@@ -61,7 +63,8 @@
 
             var list_title = $2('.editing-list').innerHTML = loadPageVar('list');
 
-            k.showListChunks(list_title, true);
+            k.showCalculatedListChunks(list_title);
+            k.showStartTime(list_title);
 
         </script>
     </body>

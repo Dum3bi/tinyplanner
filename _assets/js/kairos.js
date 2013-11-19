@@ -8,14 +8,13 @@ var chunk = {
     order:      0,
     type:       '',
     text:       '',
-    position:   0,
-    endTime:    ''
+    position:   0
 }
 
 var list_obj = {
-    title:      '',
-    end_time:   '',
-    chunks:     []
+    title:   '',
+    endtime: '',
+    chunks:  []
 }
 
 var Kairos = function() {
@@ -204,7 +203,7 @@ var Kairos = function() {
         for (var i = 0; i < lists.length; i++) {
             if( lists[i].title == title ) {
 
-                if( lists[i].chunks ) {
+                if( lists[i].chunks.length ) {
                     chunk.order     = lists[i].chunks.length + 1;
                     chunk.type      = inc == 1 ? 'then' : 'meanwhile';
                     chunk.position  = parseInt(this.getMaxChunkPosition(title)) + parseInt(inc);
@@ -284,6 +283,110 @@ var Kairos = function() {
         $2('.chunk-list').innerHTML = '<ul>'+ chunk_html + '</ul>';
     }
 
+    this.showCalculatedListChunks = function(title) {
+        var chunk_html = '';
+
+        for (var i = 0; i < lists.length; i++) {
+            if( lists[i].title == title ) {
+                var chunks = lists[i].chunks;
+
+                this.calculateListChunkTimes(title);
+
+                for (var i = 0; i < chunks.length; i++) {
+                    var ct = $2('.chunk-template').cloneNode();
+
+                    ct.querySelector('li').setAttribute('class', chunks[i].type);
+                    ct.querySelector('.type').innerHTML = chunks[i].type;
+
+                    var parsed = this.parseString(chunks[i].text);
+
+                    ct.querySelector('.text').innerHTML     = parsed[0];
+                    ct.querySelector('.duration').innerHTML = chunks[i].start_time;
+                    
+                    chunk_html += ct.innerHTML;
+                }
+            }
+            
+        };
+
+        $2('.chunk-list').innerHTML = '<ul>'+ chunk_html + '</ul>';
+    }
+
+    this.sortListChunks = function(title) {
+        for (var i = 0; i < lists.length; i++) {
+            if( lists[i].title == title ) {
+                var chunks = lists[i].chunks;
+
+                chunks.sort(function (a, b) {
+                    if (a.order > b.order)
+                      return 1;
+                    if (a.order < b.order)
+                      return -1;
+                    // a must be equal to b
+                    return 0;
+                });
+
+                return chunks;
+            }
+        }
+    }
+
+    this.calculateStartTimeMins = function(title) {
+        for (var i = 0; i < lists.length; i++) {
+            if( lists[i].title == title ) {
+                var sortedchunks = this.sortListChunks(title);
+                var total_duration = 0;
+
+                for (var l = 0; l < sortedchunks.length; l++) {
+
+                    if( sortedchunks[l].type == 'then' ) {
+                        var parsed_chunk    = this.parseString(sortedchunks[l].text);
+                        total_duration      = total_duration + parseInt(parsed_chunk[1]);
+                    }
+                }
+
+                var parsed_endtime  = this.parseEndTime( lists[i].endtime );
+                var endtime_hour    = parsed_endtime.getHours();
+                var end_time_mins   = endtime_hour * 60;
+
+                var start_time_mins = end_time_mins - total_duration;
+
+                return start_time_mins;
+            }
+        }
+    }
+
+    this.calculateListChunkTimes = function(title) {
+
+        for (var i = 0; i < lists.length; i++) {
+            if( lists[i].title == title ) {
+                var chunks          = lists[i].chunks;
+                var parsed_endtime  = this.parseEndTime( lists[i].endtime );
+
+                // Sort the chunks
+                var sortedchunks = this.sortListChunks(title);
+
+                // Get the start time in mins
+                var start_time_mins = this.calculateStartTimeMins(lists[i].title);
+
+                for (var l = 0; l < sortedchunks.length; l++) {
+                    
+                    if( sortedchunks[l].type == 'then' ) {
+                        var parsed_chunk    = this.parseString(sortedchunks[(l-1)].text);
+                        var start_time_mins = start_time_mins + parsed_chunk[1];
+                    }
+
+                    var start_hour = Math.floor(start_time_mins / 60);
+                    var start_mins = start_time_mins - (start_hour * 60);
+                    
+                    sortedchunks[l].start_time = start_hour + ':' + (start_mins < 10 ? '0' + start_mins : start_mins);
+                }
+
+                lists[i].chunks = sortedchunks;
+            }
+        }
+    }
+
     /*
     */
     this.parseString = function(str) {
@@ -315,6 +418,39 @@ var Kairos = function() {
         }
 
         return [activity, duration_int];
+    }
+
+    /*
+        e.g. number + am/pm
+    */
+    this.parseEndTime = function(str) {
+        var new_str = str.toLowerCase();
+        var hour    = parseInt(new_str);
+
+        if( new_str.indexOf('am') == -1 ) {
+            hour = hour + 12;
+        }
+
+        var end_date = new Date(2000, 1, 1, hour);
+
+        return end_date;
+    }
+
+    this.showStartTime = function(title) {
+
+        var start_time_mins = '';
+
+        for (var i = 0; i < lists.length; i++) {
+            if( lists[i].title == title ) {
+                // Get the start time in mins
+                start_time_mins = this.calculateStartTimeMins(lists[i].title);
+            }
+        }
+
+        var start_hour = Math.floor(start_time_mins / 60);
+        var start_mins = start_time_mins - (start_hour * 60);
+
+        $2('.starttime').innerHTML = '<h2>Start at '+ start_hour + ':' + (start_mins < 10 ? '0' + start_mins : start_mins) +'</h2>';
     }
 
 
