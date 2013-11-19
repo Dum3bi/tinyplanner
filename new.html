@@ -32,11 +32,22 @@
         <!-- Old School Templates -->
         <div class="add-list-template hide">
 
-            <form action="add.html" class="add-list-form">
+            <form action="add.html" method="get" class="add-list-form">
 
                 <fieldset>
-                    <label>What’s the plan</label>
-                    <input type="text" name="list" autofocus required>
+                    <p>
+                        <label>What’s the plan?</label>
+                        <input type="text" name="list" autofocus required placeholder="e.g. Sunday roast">
+                    </p>
+
+                    <p>
+                        <label>To be finished by…</label>
+                        <input type="text" name="endtime" placeholder="e.g. 3pm">
+                    </p>
+
+                    <p>
+                        <input type="submit" class="begin" value="begin">
+                    </p>
                 </fieldset>
 
             </form>
@@ -68,22 +79,33 @@
                     <div class="chunk">
                         <select name="position">
                             <option value="1">Then</option>
-                            <option value="0">Meantime</option>
+                            <option value="0">Meanwhile</option>
                         </select>
                         <input type="text" name="chunk" autofocus required>
                     </div>
                 </fieldset>
 
             </form>
+
+            <a href="view.html" class="all-done">All done &rarr;</a>
         </div>
 
+        <div class="view-template hide">
+            <h2><span class="editing-list"></span></h2>
+            
+            <div class="chunk-list"></div>
+        </div>
+
+
+        <!-- The chunk -->
         <div class="chunk-template hide">
             <li>
                <div>
                    <span class="handle"></span>
-                   <span class="position">Then</span>
+                   <span class="type">Then</span>
                </div>
                <div>
+                   <span class="duration"></span>
                    <span class="text"></span>
                </div>
             </li>

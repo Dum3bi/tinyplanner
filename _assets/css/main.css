@@ -142,8 +142,12 @@ label {
 .chunk-list li {
     font-size: 1.6rem;
     border-top: 3px solid rgb(81,98,115);
-    padding: 20px 10px 20px 100px;
+    padding: 20px 10px 20px 10px;
     line-height: 1.1;
+}
+
+.chunk-list .meanwhile .text {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .handle {
@@ -154,7 +158,7 @@ label {
     height: 10px;
 }
 
-.position {
+.type {
     display: inline-block;
     vertical-align: top;
     color: rgb(49,61,72);

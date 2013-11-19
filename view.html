@@ -20,26 +20,36 @@
 
                 <h1><a href="index.html">Tiny Planner</a></h1>
 
-                <h2>Viewing <span class="editing-list"></span></h2>
-                
-                <form action="view.html" class="endtime-form" style="display:none">
-                    <fieldset>
-                        <div class="chunk">
-                            <label>Endtime</label>
-                            <input type="text" name="endtime" placeholder="e.g. Tomorrow at 6pm">
-                        </div>
-                    </fieldset>
+                <div class="template">
 
-                    <button type="submit">Submit</button>
-                </form>
+                    <h2>Viewing <span class="editing-list"></span></h2>
 
-                <div class="chunk-list" style="display:none">
+                    <div class="chunk-list"></div>
                     
                 </div>
 
             </div>
             
         </div>
+
+
+        <!-- Templates -->
+
+
+        <!-- The chunk -->
+        <div class="chunk-template hide">
+            <li>
+               <div>
+                   <span class="handle"></span>
+                   <span class="type">Then</span>
+               </div>
+               <div>
+                   <span class="duration"></span>
+                   <span class="text"></span>
+               </div>
+            </li>
+        </div>
+
         
         <script src="_assets/js/helpers.js"></script>
         <script src="_assets/js/kairos.js"></script>
@@ -51,22 +61,8 @@
 
             var list_title = $2('.editing-list').innerHTML = loadPageVar('list');
 
-            var ff = document.createElement('input');
-            ff.setAttribute('type', 'hidden');
-            ff.setAttribute('name', 'list');
-            ff.setAttribute('value', list_title);
+            k.showListChunks(list_title, true);
 
-            $2('.endtime-form fieldset').appendChild(ff);
-
-            if( !k.getListEndTime(list_title) ) {
-                $2('.endtime-form').style.display = 'block';
-            }
-            else {
-                // populate the chunk list
-                k.showListChunks(list_title);
-
-                $2('.chunk-list').style.display = 'block';
-            }
         </script>
     </body>
 </html>

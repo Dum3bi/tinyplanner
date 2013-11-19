@@ -20,13 +20,10 @@
 
                 <h1><a href="index.html">Tiny Planner</a></h1>
 
-                <a href="new.html">Add list</a>
+                <a href="new.html">Make a plan</a>
 
                 <div class="lists">
-                    <h2>Your Lists</h2>
-
                     <div class="your-lists">
-                        No lists!
                     </div>
                 </div>
                 
@@ -40,7 +37,8 @@
         <script>
             var k = new Kairos();
             
-            k.showLists();
+            k.deleteStorage();
+            // k.showLists();
         </script>
     </body>
 </html>
