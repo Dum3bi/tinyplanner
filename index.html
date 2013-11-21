@@ -1,127 +1,209 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        
-        <title>Tiny Planner</title>
-
-        <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
 
-        <link rel="stylesheet" href="_assets/css/main.css">
+        <title>Tiny Planner</title>
+        
+        <link rel="stylesheet" href="_assets/css/global.css">
     </head>
     <body>
-        <!-- Add your site or application content here -->
 
-        <div class="container">
+        <header role="banner">
+            <h1>TinyPlanner</h1>
+        </header><!-- /@banner -->
 
-            <header>
-                <h1><a href="index.html">Tiny Planner</a></h1>
-            </header>
+        <main class="main" role="main">
 
-            <div class="main" role="main">
-
-                <div class="tiny-planner">
-                    
-                </div>
+            <div class="tiny-planner">
                 
             </div>
-            
-        </div>
-
+                
+        </main>
+        
         <!--
             Templates
         -->
 
         <script type="text/html" id="template-plans-index">
-            <a href="#plan/new" class="make-a-plan">Make a plan</a>
+            <header class="onboarding">
+                <div class="field">
+                    <label>I’m planning
+                        <input type="text" name="plan-title" required placeholder="e.g. Dinner party, Set list">
+                    </label>
+                </div><!-- /.field -->
+                
+                <div class="field">
+                    To be finished by
+                    <div class="split">
+                        <div class="split-major">
+                            <div class="split">
+                                <div class="split-even">
+                                    <input type="number" name="plan-hour" min="1" max="12" pattern="[0-9]" placeholder="hour">
+                                </div><!-- /.split-even -->
+                                <div class="split-even">
+                                    <input type="number" name="plan-minute" min="0" max="59" pattern="[0-9]" step="15" placeholder="minute">
+                                </div><!-- /.split-even -->
+                            </div><!-- /.split -->
+                        </div><!--/.split-major -->
+                        <div class="split-minor">
+                            <div class="toggle split">
+                                <label class="split-even">
+                                    <input type="radio" name="meridian" value="am">
+                                    <span class="toggle-label">am</span>
+                                </label><!-- /.split-even -->
+                                <label class="split-even">
+                                    <input type="radio" name="meridian" value="pm" checked>
+                                    <span class="toggle-label">pm</span>
+                                </label><!-- /.split-even -->
+                            </div><!-- /.toggle -->
+                        </div><!--/.split-minor -->
+                    </div><!-- /.split -->
+                </div><!-- /.field -->
+                <button class="field">Create</button>
+            </header>
 
-            <div class="plans">
-                <h2>Your plans</h2>
-                <div class="your-plans"><% plans %></div>
-            </div>
-        </script>
-
-        <script type="text/html" id="template-plans-new">
-            <fieldset class="add-plan-form">
-                <p>
-                    <label>What’s the plan?</label>
-                    <input type="text" name="plan-title" class="plan-title" autofocus placeholder="e.g. Sunday roast">
-                </p>
-
-                <p>
-                    <label>To be finished by…</label>
-                    <input type="text" name="plan-endtime" class="plan-endtime" placeholder="e.g. 3pm">
-                </p>
-
-                <p>
-                    <input type="submit" class="begin" value="begin">
-                </p>
-            </fieldset>
+            <h3 class="prose">Your plans</h3>
+            <ul>
+                <% plans %>
+            <ul>
         </script>
 
         <script type="text/html" id="template-plans-edit">
-            <h2><span class="editing"></span></h2>
+            <header>
+                <h2><% title %></h2>
+                <div class="timing">
+                    <div class="split">
+                        <div class="split-even starttime">
+                            Start at <span class="timing-value"><% starttime %></span>am
+                        </div><!-- /.split-even.starttime -->
+                        <div class="split-even endtime">
+                            Finish by <span class="timing-value"><% endtime %></span>pm
+                        </div><!-- /.split-even.endtime -->
+                    </div><!-- /.split -->
+                    <p>Total Duration: 1 hour</p>
+                </div><!-- /.timing -->
+            </header>
 
-            <div class="plan-steps"></div>
+            <ol class="plan-steps"></ol>
 
             <div class="new-step-form"></div>
         </script>
 
         <script type="text/html" id="template-add-first-step">
-            <fieldset class="add-step-form">
-                <div>
-                    <label>First</label>
-                    <input type="text" name="step" class="step-title" autofocus>
-                </div>
-            </fieldset>
+            <div class="step add-step">
+
+                <div class="split field">
+                    <span>First</span>
+                </div><!-- /.split.toggle.field -->
+
+                <textarea class="field" name="step-title" placeholder="e.g. bake bread, wash the car" required></textarea>
+                
+                <div class="split field">
+                    <div class="split-even">
+                        <input type="number" pattern="[0-9]" name="step-duration" placeholder="e.g. 15" required>
+                    </div>
+                    <div class="split-even split toggle">
+                        <label class="split-even">
+                            <input type="radio" name="step-unit" value="minutes" checked>
+                            <span class="toggle-label">Mins</span>
+                        </label><!-- /.split-even -->
+                        <label class="split-even">
+                            <input type="radio" name="step-unit" value="hours">
+                            <span class="toggle-label">Hours</span>
+                        </label><!-- /.split-even -->
+                    </div><!-- /.split.toggle -->
+                </div><!-- /.split.field -->
+
+                <button class="field">+ Add step</button>
+            <div><!-- /.step.add-step -->
         </script>
 
         <script type="text/html" id="template-add-step">
-            <fieldset class="add-step-form">
-                <div>
-                    <select name="position">
-                        <option value="1">Then</option>
-                        <option value="0">Meanwhile</option>
-                    </select>
-                    <input type="text" name="step" class="step-title" autofocus>
-                </div>
-            </fieldset>
+            <div class="step add-step">
+
+                <div class="split toggle field">
+                    <label class="split-even">
+                        <input type="radio" name="step-type" value="then" checked>
+                        <span class="toggle-label">Then</span>
+                    </label><!-- /.split-even -->
+                    <label class="split-even">
+                        <input type="radio" name="step-type" value="meanwhile">
+                        <span class="toggle-label">And also</span>
+                    </label><!-- /.split-even -->
+                </div><!-- /.split.toggle.field -->
+
+                <textarea class="field" name="step-title" placeholder="e.g. bake bread, wash the car" required></textarea>
+                
+                <div class="split field">
+                    <div class="split-even">
+                        <input type="number" pattern="[0-9]" name="step-duration" placeholder="e.g. 15" required>
+                    </div>
+                    <div class="split-even split toggle">
+                        <label class="split-even">
+                            <input type="radio" name="step-unit" value="minutes" checked>
+                            <span class="toggle-label">Mins</span>
+                        </label><!-- /.split-even -->
+                        <label class="split-even">
+                            <input type="radio" name="step-unit" value="hours">
+                            <span class="toggle-label">Hours</span>
+                        </label><!-- /.split-even -->
+                    </div><!-- /.split.toggle -->
+                </div><!-- /.split.field -->
+
+                <button class="field">+ Add step</button>
+            <div><!-- /.step.add-step -->
         </script>
 
         <script type="text/html" id="template-step">
-            <div class="step">
-               <div>
-                   <span class="handle"></span>
-                   <span class="type"><% type %></span>
-               </div>
-               <div>
-                   <span class="duration"></span>
-                   <span class="text"><% text %></span>
-               </div>
-            </div>
+            <li class="step">
+                <div class="split">
+                    <div class="split-minor">
+                        <div class="step-time">
+                            <h3 class="step-time-start">1:00</h3>
+                            <span class="step-time-meridian">pm</span>
+                        </div><!-- /.step-time -->
+                    </div><!-- /.split-minor -->
+                    <div class="split-major">
+                        <div class="step-content">
+                            <div class="step-content-meta">
+                                <span class="meta-type"><% type %></span>
+                                <span class="meta-duration"><% duration %></span>
+                            </div><!-- /.step-content-meta -->
+                            <div class="step-content-text">
+                                <p class="text-<% type %>"><% text %></p>
+                            </div><!-- /.step-content-text -->
+                        </div><!-- /.step-content -->
+                    </div><!-- /.split-major -->
+                </div><!-- /.split -->
+            </li><!-- /.step -->
         </script>
 
 
         <!--
             Scripts
         -->
-        
-        <!-- DOM selection + manipulation -->
-        <script src="_assets/js/jquery-1.10.2.min.js"></script>
 
         <!-- Helpers -->
         <script src="_assets/js/helpers.js"></script>
-
-        <!-- Classes -->
         <script src="_assets/js/class.js"></script>
-        <script src="_assets/js/plan.js"></script>
-        <script src="_assets/js/step.js"></script>
-        <script src="_assets/js/planner.js"></script>
+
+        <!-- Models -->
+        <script src="_assets/js/models/Model.js"></script>
+        <script src="_assets/js/models/Plan.js"></script>
+        <script src="_assets/js/models/Step.js"></script>
+
+        <!-- Controllers -->
+        <script src="_assets/js/controllers/BaseController.js"></script>
+        <script src="_assets/js/controllers/PlanController.js"></script>
+        
+        <!-- Router -->
+        <script src="_assets/js/tinyrouter.js"></script>
 
         <script>
-            tiny_planner = new Planner();
+            // tiny_planner = new Planner();
             // k.showLists();
         </script>
     </body>

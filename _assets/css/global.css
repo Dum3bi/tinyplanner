@@ -1,0 +1,220 @@
+* {
+	box-sizing: border-box;
+}
+html,
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #5C6F80;
+	color: #fff;
+	font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+	font-weight: 300;
+	letter-spacing: 0.025em;
+}
+h1,h2,h3,h4,h5,h6 {
+	font-weight: normal;
+	margin: 0;
+}
+h1, h2 {
+	text-align: center;
+	font-weight: 200;
+}
+a {
+	color: #fff;
+	text-decoration: none;
+}
+
+textarea,
+input,
+select,
+button {
+	width: 100%;
+	font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+	font-size: 1em;
+	padding: 0.5em;
+	border: none;
+	border-radius: 0.15em;
+}
+button {
+	background-color: #DC5038;
+	color: #fff;
+	cursor: pointer;
+	font-size: 1.2em;
+}
+label {
+	cursor: pointer;
+}
+
+ul, ol, li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+li + li {
+	border-top: 0.2em solid rgba(0,0,0,0.25);
+}
+
+/* Modular classes */
+
+.timing {
+	font-size: 0.9em;
+	text-align: center;
+	margin: 1em 0;
+	color: rgba(255,255,255,0.9);
+}
+.timing-value {
+	display: block;
+	font-size: 3.5em;
+}
+.timing .split-even + .split-even {
+	border-left: 0.1em solid rgba(0,0,0,0.2);
+}
+.endtime {
+	color: #DC5038;
+}
+
+.step {
+	padding: 1em;
+}
+.step-time {
+	padding-top: 2em;
+}
+.step-time-start {
+	font-size: 1.125em;
+}
+.step-time-meridian {
+	color: rgba(255,255,255,0.5);
+}
+.step-content + .step-content {
+	border-top: 0.1em solid rgba(0,0,0,0.25);
+	padding-top: 1em;
+}
+.step-content-meta {
+	color: #252C33;
+	font-size: .75em;
+	margin-bottom: 1em;
+}
+.step-content-meta .meta-type {
+	text-transform: uppercase;
+}
+.step-content-meta .meta-duration {
+	display: inline-block;
+	margin: 0 1em;
+}
+.step-content-text .text-then {
+	color: #fff;
+	font-size: 1.125em;
+}
+.step-content-text .text-meanwhile {
+	color: rgba(255,255,255,0.5);
+}
+
+.add-step {
+	background-color: rgba(0,0,0,0.2);
+}
+
+
+.field {
+	margin: 0.25em 0;
+}
+
+.onboarding {
+	font-size: 1.2em;
+}
+.onboarding .toggle-label {
+	font-size: 0.8em;
+	padding: 0.6em 0.3em;
+}
+.onboarding .field {
+	margin: 0.8em 0;
+}
+
+
+.toggle {
+	background-color: rgba(0,0,0,0.2);
+	display: block;
+	width: 100%;
+	border-radius: 0.2em;
+	padding: 0.2em;
+}
+.toggle input[type="radio"] {
+	display: none;
+}
+.toggle-label {
+	display: block;
+	padding: 0.5em;
+	border-radius: 0.2em;
+	color: rgba(255,255,255,0.5);
+}
+.toggle input[type="radio"]:checked + .toggle-label {
+	background-color: #DC5038;
+	color: #fff;
+}
+
+/*	Layout */
+
+.split {
+	overflow: hidden;
+}
+.split-minor {
+	width: 25%;
+	float: left;
+}
+.split-major {
+	width: 75%;
+	float: left;
+}
+.split-even {
+	width: 50%;
+	float: left;
+}
+
+/*	Page Structure */
+
+[role="banner"] {
+	background-color: #DC5038;
+	color: #fff;
+	padding: 1em;
+}
+
+[role="main"] header {
+	background-color: rgba(0,0,0,0.6);
+	color: #fff;
+	padding: 1em;
+}
+.prose {
+	padding: 1em;
+}
+
+/* Breakpoints */
+
+@media all and (min-width: 30em) {
+	body {
+		font-size: 110%;
+	}
+}
+@media all and (min-width: 40em) {
+	body {
+		font-size: 120%;
+	}
+}
+@media all and (min-width: 50em) {
+	body {
+		font-size: 130%;
+	}
+}
+@media all and (min-width: 60em) {
+	body {
+		font-size: 140%;
+	}
+}
+@media all and (min-width: 70em) {
+	body {
+		font-size: 150%;
+	}
+}
+@media all and (min-width: 80em) {
+	body {
+		font-size: 160%;
+	}
+}
