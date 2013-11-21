@@ -16,29 +16,113 @@
 
         <div class="container">
 
+            <header>
+                <h1><a href="index.html">Tiny Planner</a></h1>
+            </header>
+
             <div class="main" role="main">
 
-                <h1><a href="index.html">Tiny Planner</a></h1>
-
-                <a href="new.html">Make a plan</a>
-
-                <div class="lists">
-                    <div class="your-lists">
-                    </div>
+                <div class="tiny-planner">
+                    
                 </div>
                 
             </div>
             
         </div>
+
+        <!--
+            Templates
+        -->
+
+        <script type="text/html" id="template-plans-index">
+            <a href="#plan/new" class="make-a-plan">Make a plan</a>
+
+            <div class="plans">
+                <h2>Your plans</h2>
+                <div class="your-plans"><% plans %></div>
+            </div>
+        </script>
+
+        <script type="text/html" id="template-plans-new">
+            <fieldset class="add-plan-form">
+                <p>
+                    <label>What’s the plan?</label>
+                    <input type="text" name="plan-title" class="plan-title" autofocus placeholder="e.g. Sunday roast">
+                </p>
+
+                <p>
+                    <label>To be finished by…</label>
+                    <input type="text" name="plan-endtime" class="plan-endtime" placeholder="e.g. 3pm">
+                </p>
+
+                <p>
+                    <input type="submit" class="begin" value="begin">
+                </p>
+            </fieldset>
+        </script>
+
+        <script type="text/html" id="template-plans-edit">
+            <h2><span class="editing"></span></h2>
+
+            <div class="plan-steps"></div>
+
+            <div class="new-step-form"></div>
+        </script>
+
+        <script type="text/html" id="template-add-first-step">
+            <fieldset class="add-step-form">
+                <div>
+                    <label>First</label>
+                    <input type="text" name="step" class="step-title" autofocus>
+                </div>
+            </fieldset>
+        </script>
+
+        <script type="text/html" id="template-add-step">
+            <fieldset class="add-step-form">
+                <div>
+                    <select name="position">
+                        <option value="1">Then</option>
+                        <option value="0">Meanwhile</option>
+                    </select>
+                    <input type="text" name="step" class="step-title" autofocus>
+                </div>
+            </fieldset>
+        </script>
+
+        <script type="text/html" id="template-step">
+            <div class="step">
+               <div>
+                   <span class="handle"></span>
+                   <span class="type"><% type %></span>
+               </div>
+               <div>
+                   <span class="duration"></span>
+                   <span class="text"><% text %></span>
+               </div>
+            </div>
+        </script>
+
+
+        <!--
+            Scripts
+        -->
         
+        <!-- DOM selection + manipulation -->
+        <script src="_assets/js/jquery-1.10.2.min.js"></script>
+
+        <!-- Helpers -->
         <script src="_assets/js/helpers.js"></script>
-        <script src="_assets/js/kairos.js"></script>
+
+        <!-- Classes -->
+        <script src="_assets/js/class.js"></script>
+        <script src="_assets/js/plan.js"></script>
+        <script src="_assets/js/step.js"></script>
+        <script src="_assets/js/planner.js"></script>
 
         <script>
-            var k = new Kairos();
-            
-            // k.deleteStorage();
-            k.showLists();
+            tiny_planner = new Planner();
+            // k.showLists();
         </script>
     </body>
 </html>
