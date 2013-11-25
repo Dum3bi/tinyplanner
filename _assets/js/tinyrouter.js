@@ -9,25 +9,29 @@ var TinyRouter = Class.extend({
         'plan'          : 'Plan',
         'plan/new'      : 'Plan@new',
         'plan/edit'     : 'Plan@edit',
+        'step/create'   : 'Step@create',
     },
 
     init: function() {
         var self = this;
 
         // Start the initial route.
-        this.route(this);
+        this.route();
 
         // Now bind to the hashchange event for all further routing
-        window.addEventListener('hashchange', function(e) { self.route(self) }, false);
+        window.addEventListener('hashchange', function(e) { self.route() }, false);
     },
 
     /*
         The meat of the router.
     */
-    route: function(self) {
+    route: function(hash) {
+        if( !hash ) {
+            hash    = window.location.hash.replace('#', '');
+        }
+
         // Get whatever the hash is and remove the actual has char.
-        var hash    = window.location.hash.replace('#', ''),
-            id      = 0;
+        var id  = 0;
 
         // Check the hash, and see if there's a third argument, which will be an ID. Store the ID.
         if( hash.split('/').length == 3 ) {
@@ -35,9 +39,9 @@ var TinyRouter = Class.extend({
             id      = split[2];
             hash    = split[0]+'/'+split[1];
         }
-        
+
         // Look at the app's routes and get any that conform to the hash.
-        var route = self.routes[hash];
+        var route = this.routes[hash];
 
         // If a route for that hash has been defined, load it.
         if( route !== undefined ) {
@@ -63,11 +67,15 @@ var TinyRouter = Class.extend({
         }
     },
 
+    /*
+        e.g. tinyrouter.go('controller/view')
+    */
     go: function(location) {
         window.location = '#'+location;
     }
 })
 
+// Load the class on document ready.
 document.onreadystatechange = function () {
     if (document.readyState == "complete") {
         window.tinyrouter = new TinyRouter;

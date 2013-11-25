@@ -4,10 +4,19 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="apple-mobile-web-app-capable" content="yes">
-
         <title>Tiny Planner</title>
-        
+
         <link rel="stylesheet" href="_assets/css/global.css">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="touch-icon-ipad.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="touch-icon-iphone-retina.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="touch-icon-ipad-retina.png">
+        <link rel="apple-touch-startup-image" href="apple-touch-startup-image.png">
+        <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon">
     </head>
     <body>
 
@@ -33,7 +42,7 @@
                     <label>I’m planning
                         <input type="text" name="plan-title" required placeholder="e.g. Dinner party, Set list">
                     </label>
-                </div><!-- /.field -->
+                </div>
                 
                 <div class="field">
                     To be finished by
@@ -42,33 +51,33 @@
                             <div class="split">
                                 <div class="split-even">
                                     <input type="number" name="plan-hour" min="1" max="12" pattern="[0-9]" placeholder="hour">
-                                </div><!-- /.split-even -->
+                                </div>
                                 <div class="split-even">
                                     <input type="number" name="plan-minute" min="0" max="59" pattern="[0-9]" step="15" placeholder="minute">
-                                </div><!-- /.split-even -->
-                            </div><!-- /.split -->
-                        </div><!--/.split-major -->
+                                </div>
+                            </div>
+                        </div>
                         <div class="split-minor">
                             <div class="toggle split">
                                 <label class="split-even">
                                     <input type="radio" name="meridian" value="am">
                                     <span class="toggle-label">am</span>
-                                </label><!-- /.split-even -->
+                                </label>
                                 <label class="split-even">
                                     <input type="radio" name="meridian" value="pm" checked>
                                     <span class="toggle-label">pm</span>
-                                </label><!-- /.split-even -->
-                            </div><!-- /.toggle -->
-                        </div><!--/.split-minor -->
-                    </div><!-- /.split -->
-                </div><!-- /.field -->
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <button class="field">Create</button>
             </header>
 
             <h3 class="prose">Your plans</h3>
             <ul>
                 <% plans %>
-            <ul>
+            </ul>
         </script>
 
         <script type="text/html" id="template-plans-edit">
@@ -78,13 +87,13 @@
                     <div class="split">
                         <div class="split-even starttime">
                             Start at <span class="timing-value"><% starttime %></span>am
-                        </div><!-- /.split-even.starttime -->
+                        </div>
                         <div class="split-even endtime">
                             Finish by <span class="timing-value"><% endtime %></span>pm
-                        </div><!-- /.split-even.endtime -->
-                    </div><!-- /.split -->
-                    <p>Total Duration: 1 hour</p>
-                </div><!-- /.timing -->
+                        </div>
+                    </div>
+                    <p>Total Duration: <% totalduration %></p>
+                </div>
             </header>
 
             <ol class="plan-steps"></ol>
@@ -97,7 +106,7 @@
 
                 <div class="split field">
                     <span>First</span>
-                </div><!-- /.split.toggle.field -->
+                </div>
 
                 <textarea class="field" name="step-title" placeholder="e.g. bake bread, wash the car" required></textarea>
                 
@@ -109,16 +118,16 @@
                         <label class="split-even">
                             <input type="radio" name="step-unit" value="minutes" checked>
                             <span class="toggle-label">Mins</span>
-                        </label><!-- /.split-even -->
+                        </label>
                         <label class="split-even">
                             <input type="radio" name="step-unit" value="hours">
                             <span class="toggle-label">Hours</span>
-                        </label><!-- /.split-even -->
-                    </div><!-- /.split.toggle -->
-                </div><!-- /.split.field -->
+                        </label>
+                    </div>
+                </div>
 
                 <button class="field">+ Add step</button>
-            <div><!-- /.step.add-step -->
+            <div>
         </script>
 
         <script type="text/html" id="template-add-step">
@@ -128,12 +137,12 @@
                     <label class="split-even">
                         <input type="radio" name="step-type" value="then" checked>
                         <span class="toggle-label">Then</span>
-                    </label><!-- /.split-even -->
+                    </label>
                     <label class="split-even">
                         <input type="radio" name="step-type" value="meanwhile">
                         <span class="toggle-label">And also</span>
-                    </label><!-- /.split-even -->
-                </div><!-- /.split.toggle.field -->
+                    </label>
+                </div>
 
                 <textarea class="field" name="step-title" placeholder="e.g. bake bread, wash the car" required></textarea>
                 
@@ -145,16 +154,16 @@
                         <label class="split-even">
                             <input type="radio" name="step-unit" value="minutes" checked>
                             <span class="toggle-label">Mins</span>
-                        </label><!-- /.split-even -->
+                        </label>
                         <label class="split-even">
                             <input type="radio" name="step-unit" value="hours">
                             <span class="toggle-label">Hours</span>
-                        </label><!-- /.split-even -->
-                    </div><!-- /.split.toggle -->
-                </div><!-- /.split.field -->
+                        </label>
+                    </div>
+                </div>
 
                 <button class="field">+ Add step</button>
-            <div><!-- /.step.add-step -->
+            <div>
         </script>
 
         <script type="text/html" id="template-step">
@@ -162,23 +171,23 @@
                 <div class="split">
                     <div class="split-minor">
                         <div class="step-time">
-                            <h3 class="step-time-start">1:00</h3>
-                            <span class="step-time-meridian">pm</span>
-                        </div><!-- /.step-time -->
-                    </div><!-- /.split-minor -->
+                            <h3 class="step-time-start"><% starttime %></h3>
+                            <span class="step-time-meridian"></span>
+                        </div>
+                    </div>
                     <div class="split-major">
                         <div class="step-content">
                             <div class="step-content-meta">
                                 <span class="meta-type"><% type %></span>
                                 <span class="meta-duration"><% duration %></span>
-                            </div><!-- /.step-content-meta -->
+                            </div>
                             <div class="step-content-text">
                                 <p class="text-<% type %>"><% text %></p>
-                            </div><!-- /.step-content-text -->
-                        </div><!-- /.step-content -->
-                    </div><!-- /.split-major -->
-                </div><!-- /.split -->
-            </li><!-- /.step -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
         </script>
 
 
@@ -198,6 +207,7 @@
         <!-- Controllers -->
         <script src="_assets/js/controllers/BaseController.js"></script>
         <script src="_assets/js/controllers/PlanController.js"></script>
+        <script src="_assets/js/controllers/StepController.js"></script>
         
         <!-- Router -->
         <script src="_assets/js/tinyrouter.js"></script>

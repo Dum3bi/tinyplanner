@@ -56,6 +56,10 @@ li + li {
 
 /* Modular classes */
 
+.error {
+	border: 1px solid rgb(255,0,0);
+}
+
 .timing {
 	font-size: 0.9em;
 	text-align: center;

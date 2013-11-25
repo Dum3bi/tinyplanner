@@ -7,6 +7,8 @@
 var Model = Class.extend({
 
     name:       'tp-model',
+
+    id:         null,
     store:      null,
     records:    [],
 
@@ -26,27 +28,57 @@ var Model = Class.extend({
         return (this.S4()+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+this.S4()+this.S4());
     },
 
+    create: function(json) {
+
+        this.fromJSON(json);
+        this.save();
+
+        return this.id;
+    },
+
     save: function() {
         // Need a way to use other DB 'engines'. For now, localStorage.
         var obj = this.toJSON();
-        obj.id = this.guid();
+        
+        if( this.id ) {
+            obj.id = this.id;
+        }
+        else {
+            obj.id  = this.guid();
+            this.id = obj.id;
 
-        this.id = obj.id;
-
-        this.records.push(obj.id);
-        localStorage.setItem(this.name, this.records.join(","));
+            this.records.push(obj.id);
+            localStorage.setItem(this.name, this.records.join(","));
+        }
 
         localStorage.setItem(this.name+'-'+obj.id, JSON.stringify(obj));
+
+        return this.id;
     },
 
     find: function(id) {
-        return JSON.parse(localStorage.getItem(this.name+"-"+id));
+        var json    = JSON.parse(localStorage.getItem(this.name+"-"+id));
+
+        // convert the saved json data into the object itself as class properies.
+        this.fromJSON(json);
+
+        return this;
     },
 
     findAll: function() {
         return this.records.map(function(id) {
-            return JSON.parse(localStorage.getItem(this.name+"-"+id));
+            var json = JSON.parse(localStorage.getItem(this.name+"-"+id));
+            this.fromJSON(json);
+            return this;
         }, this);
+    },
+
+    fromJSON: function(json) {
+        for( var prop in json ) {
+            this[prop] = json[prop];
+        }
+
+        return this;
     }
 
 });
