@@ -9,6 +9,7 @@ body {
 	color: #fff;
 	font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
 	font-weight: 300;
+    font-size: 100%;
 	letter-spacing: 0.025em;
 }
 h1,h2,h3,h4,h5,h6 {
@@ -18,6 +19,10 @@ h1,h2,h3,h4,h5,h6 {
 h1, h2 {
 	text-align: center;
 	font-weight: 200;
+}
+h3 {
+    color: rgb(175,183,191);
+    font-weight: 200;
 }
 a {
 	color: #fff;
@@ -33,13 +38,13 @@ button {
 	font-size: 1em;
 	padding: 0.5em;
 	border: none;
-	border-radius: 0.15em;
+	border-radius: 0.25em;
 }
 button {
 	background-color: #DC5038;
 	color: #fff;
 	cursor: pointer;
-	font-size: 1.2em;
+	font-size: 1.4em;
 }
 label {
 	cursor: pointer;
@@ -50,10 +55,33 @@ ul, ol, li {
 	padding: 0;
 	list-style: none;
 }
-li + li {
+li + li, li:last-of-type {
 	border-top: 0.2em solid rgba(0,0,0,0.25);
 }
 
+.main.prose {
+    color: rgb(38,44,50);
+}
+
+.main.prose h1 {
+    text-align: left;
+    font-size: 1.4em;
+}
+
+.main.prose h2 {
+    text-align: left;
+    font-size: 1.2em;
+}
+
+.main.prose p {
+    font-size: 1em;
+}
+
+.small {
+    font-size: 0.8em;
+    text-align: center;
+    width: 100%;
+}
 /* Modular classes */
 
 .error {
@@ -79,6 +107,7 @@ li + li {
 
 .step {
 	padding: 1em;
+    background: #596877;
 }
 .step-time {
 	padding-top: 2em;

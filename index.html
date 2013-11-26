@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <title>Tiny Planner</title>
+        <title>TinyPlanner &#183; Work out when you need to start something</title>
 
         <link rel="stylesheet" href="_assets/css/global.css">
 
@@ -21,7 +21,9 @@
     <body>
 
         <header role="banner">
-            <h1>TinyPlanner</h1>
+            <h1>
+                <a href="/" role="link">TinyPlanner</a>
+            </h1>
         </header><!-- /@banner -->
 
         <main class="main" role="main">
@@ -40,7 +42,7 @@
             <header class="onboarding">
                 <div class="field">
                     <label>I’m planning
-                        <input type="text" name="plan-title" required placeholder="e.g. Dinner party, Set list">
+                        <input type="text" name="plan-title" required placeholder="to serve dinner, world domination">
                     </label>
                 </div>
                 
@@ -74,10 +76,12 @@
                 <button class="field">Create</button>
             </header>
 
-            <h3 class="prose">Your plans</h3>
+            <h3 class="prose">My plans</h3>
             <ul>
                 <% plans %>
             </ul>
+            <br><br><br>
+            <p class="small"><a href="/about.html"rel="help">About TinyPlanner</a></p>
         </script>
 
         <script type="text/html" id="template-plans-edit">
@@ -92,7 +96,7 @@
                             Finish by <span class="timing-value"><% endtime %></span>pm
                         </div>
                     </div>
-                    <p>Total Duration: <% totalduration %></p>
+                    <p>You need <% totalduration %></p>
                 </div>
             </header>
 
@@ -108,7 +112,7 @@
                     <span>First</span>
                 </div>
 
-                <textarea class="field" name="step-title" placeholder="e.g. bake bread, wash the car" required></textarea>
+                <textarea class="field" name="step-title" placeholder="bring to the boil, go to the station" required></textarea>
                 
                 <div class="split field">
                     <div class="split-even">
@@ -126,7 +130,7 @@
                     </div>
                 </div>
 
-                <button class="field">+ Add step</button>
+                <button class="field">Add step</button>
             <div>
         </script>
 
@@ -144,7 +148,7 @@
                     </label>
                 </div>
 
-                <textarea class="field" name="step-title" placeholder="e.g. bake bread, wash the car" required></textarea>
+                <textarea class="field" name="step-title" placeholder="bring to the boil, go to the station" required></textarea>
                 
                 <div class="split field">
                     <div class="split-even">
@@ -162,7 +166,7 @@
                     </div>
                 </div>
 
-                <button class="field">+ Add step</button>
+                <button class="field">Add step</button>
             <div>
         </script>
 

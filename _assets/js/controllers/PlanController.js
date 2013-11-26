@@ -31,7 +31,7 @@ var PlanController = BaseController.extend({
             }
         }
         else {
-            plans_html = '<li>No Plans</li>';
+            plans_html = '<li><p>You haven\'t created any plans yet, but that\'s OK!</p></li>';
         }
 
         // Show the view
