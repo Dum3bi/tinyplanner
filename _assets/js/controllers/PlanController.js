@@ -43,11 +43,23 @@ var PlanController = BaseController.extend({
                 // save the plan
                 self.create();
             }
-            else return;
+            else
+                return;
         };
 
         // Load the view events
         this.loadEvents(events);
+
+        Array.prototype.slice.call(document.querySelectorAll('.step')).forEach(function(elm) {
+            elm.setAttribute('draggable', true);
+            elm.addEventListener('dragstart', function(e) {
+                e.dataTransfer.setData('text/plain', 'This text may be dragged')
+                console.log('drag start');
+            });
+            elm.addEventListener('dragend', function() {
+                console.log('drag end');
+            });
+        });
 
         var ce = function(e) {
 
