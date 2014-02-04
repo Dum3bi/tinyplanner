@@ -1,5 +1,7 @@
-* {
-	box-sizing: border-box;
+*, *:before, *:after {
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+			box-sizing: border-box;
 }
 html,
 body {
@@ -34,7 +36,7 @@ input,
 select,
 button {
 	width: 100%;
-	font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+	font-family: 'Helvetica Neue', Arial, sans-serif;
 	font-size: 1em;
 	padding: 0.5em;
 	border: none;
@@ -222,32 +224,22 @@ li + li, li:last-of-type {
 /* Breakpoints */
 
 @media all and (min-width: 30em) {
-	body {
+	main {
 		font-size: 110%;
 	}
 }
 @media all and (min-width: 40em) {
-	body {
+	main {
 		font-size: 120%;
 	}
 }
 @media all and (min-width: 50em) {
-	body {
+	main {
 		font-size: 130%;
 	}
 }
 @media all and (min-width: 60em) {
-	body {
+	main {
 		font-size: 140%;
-	}
-}
-@media all and (min-width: 70em) {
-	body {
-		font-size: 150%;
-	}
-}
-@media all and (min-width: 80em) {
-	body {
-		font-size: 160%;
 	}
 }

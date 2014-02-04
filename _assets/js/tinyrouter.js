@@ -16,8 +16,8 @@ var TinyRouter = function(routes) {
 TinyRouter.prototype.init = function() {
     var self = this;
 
-    // Seriously, if the browser can't support this function, it's not worth bothering with.
-    if( !window.querySelector ) {
+    // Seriously, if the browser can't support this function then it's not worth bothering with.
+    if( !document.querySelector ) {
         document.body.innerHTML = '<div style="padding: 30px 15px"><h1>Tiny Planner</h1><h2>Whoa, whoa... WHOA.</h2><p>This browser is ooooooooold. And, subsequently, unsupported.</p></div>';
         return;
     }
