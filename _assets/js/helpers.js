@@ -7,11 +7,11 @@
 function $2(elm) { return document.querySelector(elm) }
 
 HTMLInputElement.prototype.style        = function(s, t) { if(arguments[1]) { this.style[s] = t; return this; } else { return window.getComputedStyle(this)[s]; } }
-HTMLInputElement.prototype.addClass     = function (c) { var arr = []; if(this.getAttribute('class')) { arr = this.getAttribute('class').replace(/[\s]{2}/, ' ').split(' '); arr.push(c); } else { arr = [c] } this.setAttribute('class', arr.join(' ')); }
-HTMLInputElement.prototype.removeClass  = function (c) { var arr = [], idx; if(this.getAttribute('class')) { arr = this.getAttribute('class').replace(/[\s]{2}/, ' ').split(' '); idx = arr.indexOf(c); if(idx != -1) { arr.splice(idx); this.setAttribute('class', arr.join(' ')); } } }
+HTMLInputElement.prototype.addClass     = function (c) { if (this.classList) this.classList.add(c); else this.className += ' ' + className; }
+HTMLInputElement.prototype.removeClass  = function (c) { if (this.classList) this.classList.remove(c); else { var arr = [], idx; arr = this.className.replace(/[\s]{2}/, ' ').split(' '); idx = arr.indexOf(c); if(idx != -1) { arr.splice(idx); this.className = arr.join(' '); } } }
 
-HTMLTextAreaElement.prototype.addClass = HTMLInputElement.prototype.addClass;
-HTMLTextAreaElement.prototype.removeClass = HTMLInputElement.prototype.removeClass;
+HTMLTextAreaElement.prototype.addClass      = HTMLInputElement.prototype.addClass;
+HTMLTextAreaElement.prototype.removeClass   = HTMLInputElement.prototype.removeClass;
 
 function _template(str, obj) {
     var tmpl = $2('#template-'+str).innerHTML;
