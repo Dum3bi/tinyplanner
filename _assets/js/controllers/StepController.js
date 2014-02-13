@@ -3,8 +3,6 @@
 
     Handles all logic for the steps.
 */
-'use strict'
-
 var StepController = BaseController.extend({
 
     create: function(id) {

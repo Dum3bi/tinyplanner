@@ -69,7 +69,7 @@ var Model = Class.extend({
         return this.records.map(function(id) {
             var json = JSON.parse(localStorage.getItem(this.name+"-"+id));
             this.fromJSON(json);
-            return this;
+            return new this();
         }, this);
     },
 

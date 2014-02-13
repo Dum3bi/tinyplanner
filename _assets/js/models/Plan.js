@@ -2,8 +2,6 @@
     Plan
 */
 
-/****** Old *******/
-
 var Plan = Model.extend({
 
     // Global vars
