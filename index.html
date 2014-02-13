@@ -199,26 +199,71 @@
             Scripts
         -->
 
-        <!-- Helpers -->
         <script src="_assets/js/helpers.js"></script>
-        <script src="_assets/js/class.js"></script>
 
-        <!-- Models -->
-        <script src="_assets/js/models/Model.js"></script>
-        <script src="_assets/js/models/Plan.js"></script>
-        <script src="_assets/js/models/Step.js"></script>
-
-        <!-- Controllers -->
-        <script src="_assets/js/controllers/BaseController.js"></script>
-        <script src="_assets/js/controllers/PlanController.js"></script>
-        <script src="_assets/js/controllers/StepController.js"></script>
-        
-        <!-- Router -->
-        <script src="_assets/js/tinyrouter.js"></script>
+        <script src="_assets/js/underscore.js"></script>
+        <script src="_assets/js/backbone.js"></script>
 
         <script>
-            // tiny_planner = new Planner();
-            // k.showLists();
+
+        // Models
+
+        var Step = Backbone.Model.extend({
+
+            defaults: function() {
+                return {
+                    order: Steps.nextOrder(),
+                    type:       '',
+                    position:   0,
+                    text:       '',
+                    duration: {
+                        days:       0,
+                        hours:      0,
+                        minutes:    0
+                    },
+                };
+            },
+
+        });
+
+
+        var Plan = Backbone.Model.extend({
+           
+           defaults: function() {
+                return {
+                    order: Steps.nextOrder(),
+                    title:          '',
+                    steps:          [],
+                    startTime:  {
+                        days:       0,
+                        hours:      0,
+                        minutes:    0
+                    },
+                        endTime: {
+                        hours:      0,
+                        minutes:    0
+                    },
+                    duration: {
+                        days:       0,
+                        hours:      0,
+                        minutes:    0
+                    },
+                };
+           },
+
+        });
+
+        // Collections
+
+        var Steps = Backbone.Collection.extend({
+            model: Step
+        });
+
+        var Plans = Backbone.Collection.extend({
+            model: Plan
+        });
+
         </script>
+        
     </body>
 </html>
