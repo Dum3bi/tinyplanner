@@ -107,7 +107,7 @@ li + li, li:last-of-type {
 	color: #DC5038;
 }
 
-.step {
+.plan, .step {
 	padding: 1em;
     background: #596877;
 }
