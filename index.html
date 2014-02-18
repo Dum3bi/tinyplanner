@@ -88,34 +88,28 @@
         </script>
 
         <script type="text/template" id="template-plan">
-            <div class="plan">
-                <span><%- title %></span>
-            </div>
+            <span><%- title %></span>
         </script>
 
         <script type="text/html" id="template-plans-edit">
             <header>
-                <h2><% title %></h2>
+                <h2><%= plan.get('title') %></h2>
                 <div class="timing">
                     <div class="split">
                         <div class="split-even starttime">
-                            Start at <span class="timing-value"><% starttime %></span>am
+                            Start at <span class="timing-value"><%= plan.getStartTime() %></span>am
                         </div>
                         <div class="split-even endtime">
-                            Finish by <span class="timing-value"><% endtime %></span>pm
+                            Finish by <span class="timing-value"><%- plan.get('endTime') %></span>pm
                         </div>
                     </div>
-                    <p>You need <%= totalduration %></p>
+                    <p>You need <%= plan.get('duration').hours %></p>
                 </div>
             </header>
 
-            <ol class="plan-steps">
-                <%= steps %>
-            </ol>
+            <ol class="plan-steps"></ol>
 
-            <div class="new-step-form">
-                <%= step_form %>
-            </div>
+            <div class="new-step-form"></div>
         </script>
 
         <script type="text/html" id="template-add-first-step">
@@ -213,197 +207,56 @@
         -->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
 
-        <script src="_assets/js/underscore.js"></script>
-        <script src="_assets/js/backbone.js"></script>
-        <script src="_assets/js/backbone.localStorage.js"></script>
+        <!-- Backbone -->
+        <script src="_assets/js/backbone/underscore.js"></script>
+        <script src="_assets/js/backbone/backbone.js"></script>
+        <script src="_assets/js/backbone/backbone.localStorage.js"></script>
+
+        <script>
+            (function() {
+
+                var TinyPlanner = {
+                    Models:         {},
+                    Collections:    {},
+                    Views:          {},
+
+                    currentView:    null,
+                    router:         null
+                };
+
+                TinyPlanner.init = function () {
+                    TinyPlanner.router = new TinyPlanner.Router();
+
+                    Backbone.history.start({
+                        hashChange: true
+                    });
+                };
+
+                window.TinyPlanner = TinyPlanner;
+
+                window.addEventListener("load", TinyPlanner.init, false);
+            })();
+        </script>
+
+        <!-- Models, Views & Routes -->
+        <script src="_assets/js/backbone/models/plan.js"></script>
+        <script src="_assets/js/backbone/models/step.js"></script>
+
+        <script src="_assets/js/backbone/views/index.js"></script>
+        <script src="_assets/js/backbone/views/plan.js"></script>
 
         <script>
 
-        // Models
-
-        var Plan = Backbone.Model.extend({
-           
-           defaults: function() {
-                return {
-                    title:          '',
-                    steps:          [],
-                    startTime:  {
-                        day:        0,
-                        hour:       0,
-                        minute:     0
-                    },
-                    endTime: {
-                        day:        0,
-                        hour:       0,
-                        minute:     0
-                    },
-                    duration: {
-                        days:       0,
-                        hours:      0,
-                        minutes:    0
-                    },
-                };
-           },
-
-        });
-
-        var Step = Backbone.Model.extend({
-
-            defaults: function() {
-                return {
-                    text:           '',
-                    duration: {
-                        days:       0,
-                        hours:      0,
-                        minutes:    0
-                    },
-                };
-            },
-
-        });
-
         // Collections
 
-        var PlanList = Backbone.Collection.extend({
-            model: Plan,
-
-            localStorage: new Backbone.LocalStorage('tiny-plan'),
-
-            nextOrder: function() {
-                if ( !this.length ) {
-                    return 1;
-                }
-
-                return this.last().get('order') + 1;
-            },
-
-            comparator: function( plan ) {
-                return plan.get('order');
-            }
-        });
-
-        var Plans = new PlanList();
-
-        var Steps = Backbone.Collection.extend({
-            model: Step
-        });
-
-        // Views
-
-        var PlanView = Backbone.View.extend({
-            tagName: 'div',
-
-            template: _.template( $("#template-plan").html() ),
-
-            render: function() {
-                this.$el.html( this.template( this.model.toJSON() ) );
-                
-                return this;
-            },
-        });
-
-        var IndexView = Backbone.View.extend({
-            el: '.tiny-planner',
-            template: _.template( $("#template-plans-index").html() ),
-
-            events: {
-                'keypress': 'createOnEnter',
-                'click .field': 'createOnEnter'
-            },
-
-            initialize: function() {
-                this.listenTo(Plans, 'add', this.addOne);
-                this.listenTo(Plans, 'reset', this.addAll);
-
-                this.listenTo(Plans, 'all', this.render);
-
-                Plans.fetch();
-            },
-
-            addOne: function(plan) {
-                var planview = new PlanView({ model: plan });
-                $('.plans').append( planview.render().el );
-            },
-
-            // Add all items in the **Todos** collection at once.
-            addAll: function() {
-                $('.plans').html('');
-                Plans.each(this.addOne, this);
-            },
-
-            createOnEnter: function( event ) {
-                if ( event.which !== 13 || !this.$('[name=plan-title]').val().trim() ) {
-                    return;
-                }
-
-                console.log('creating... ' + this.$('[name=plan-title]').val());
-
-                Plans.create({
-                    title: this.$('[name=plan-title]').val().trim()
-                });
-
-                // this.$('[name=plan-title]').val('');
-            },
-
-            render: function() {
-
-                this.$el.html( this.template( { plans: Plans } ) );
-                this.addAll();
-
-                // this.$el.on('click', function(e) {
-                //     if( e.target.className == 'field' ) {
-                //         // save the plan
-                //         console.log('click saving...');
-                //     }
-                // });
-
-                return this;
-            }
-        });
-
-        // Controllers/Routes
-
-        var TinyPlanner = Backbone.Router.extend({
-
-            routes: {
-                "": "index"
-            },
-
-            initialize: function(options) {
-                this._index = new IndexView();
-
-                return this;
-            },
-
-            index: function(about) {
-                this._index.render();
-            }
-        });
-
-        var PlansController = Backbone.Router.extend({
-
-            routes: {
-                "": "index"
-            },
-
-            initialize: function(options) {
-                this._index = new IndexView();
-
-                return this;
-            },
-
-            index: function(about) {
-                this._index.render();
-            }
-        });
-
-
-        // Run it!
-
-        var planner = new TinyPlanner();
-        Backbone.history.start();
+        // var Plans = new TinyPlanner.Collections.Plans();
+        // var Steps = new TinyPlanner.Collections.Steps();
 
         </script>
+
+        <script src="_assets/js/backbone/router.js"></script>
+
+        
         
     </body>
 </html>

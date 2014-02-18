@@ -57,7 +57,7 @@ ul, ol, li {
 	padding: 0;
 	list-style: none;
 }
-li + li, li:last-of-type {
+li + li, li:last-of-type, .plan + .plan {
 	border-top: 0.2em solid rgba(0,0,0,0.25);
 }
 
