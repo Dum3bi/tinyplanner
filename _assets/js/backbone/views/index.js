@@ -31,7 +31,7 @@
 
             this.$('[name=plan-title]').val('');
         },
-        
+
     });
 
 
@@ -39,7 +39,6 @@
 
         initialize: function(options) {
             this.listenTo(this.collection, 'add', this.renderPlan);
-            // this.listenTo(this.collection, 'all', this.render);
         },
 
         renderPlan: function(plan) {
@@ -71,8 +70,7 @@
         loadPlan: function() {
             TinyPlanner.router.navigate('plan/'+this.model.id );
 
-            var editplan = new TinyPlanner.Views.Plan();
-            editplan.render(this.model.id);
+            TinyPlanner.currentView = new TinyPlanner.Views.Plan({ el: '.tiny-planner', model: this.model });
         },
 
         render: function() {

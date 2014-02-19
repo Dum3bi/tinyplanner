@@ -107,7 +107,7 @@
                 </div>
             </header>
 
-            <ol class="plan-steps"></ol>
+            <div class="steps"></div>
 
             <div class="new-step-form"></div>
         </script>
@@ -178,27 +178,25 @@
         </script>
 
         <script type="text/html" id="template-step">
-            <li class="step">
-                <div class="split">
-                    <div class="split-minor">
-                        <div class="step-time">
-                            <h3 class="step-time-start"><% starttime %></h3>
-                            <span class="step-time-meridian"></span>
-                        </div>
+            <div class="split">
+                <div class="split-minor">
+                    <div class="step-time">
+                        <h3 class="step-time-start"><%= starttime %></h3>
+                        <span class="step-time-meridian"></span>
                     </div>
-                    <div class="split-major">
-                        <div class="step-content">
-                            <div class="step-content-meta">
-                                <span class="meta-type"><% type %></span>
-                                <span class="meta-duration"><% duration %></span>
-                            </div>
-                            <div class="step-content-text">
-                                <p class="text-<% type %>"><% text %></p>
-                            </div>
+                </div>
+                <div class="split-major">
+                    <div class="step-content">
+                        <div class="step-content-meta">
+                            <span class="meta-type"><%= type %></span>
+                            <span class="meta-duration"><%= step.duration.days %></span>
+                        </div>
+                        <div class="step-content-text">
+                            <p class="text-<% type %>"><%= step.text %></p>
                         </div>
                     </div>
                 </div>
-            </li>
+            </div>
         </script>
 
 
@@ -245,18 +243,8 @@
         <script src="_assets/js/backbone/views/index.js"></script>
         <script src="_assets/js/backbone/views/plan.js"></script>
 
-        <script>
-
-        // Collections
-
-        // var Plans = new TinyPlanner.Collections.Plans();
-        // var Steps = new TinyPlanner.Collections.Steps();
-
-        </script>
-
         <script src="_assets/js/backbone/router.js"></script>
 
-        
         
     </body>
 </html>
