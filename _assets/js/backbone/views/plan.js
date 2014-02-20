@@ -25,6 +25,8 @@
 
             // this.model.set('steps', sc);
 
+            console.log(this.model)
+
             if( !this.model.get('steps').length ) {
                 this.model.set('steps', new TinyPlanner.Collections.Steps);
             }

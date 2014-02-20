@@ -225,9 +225,7 @@
                 TinyPlanner.init = function () {
                     TinyPlanner.router = new TinyPlanner.Router();
 
-                    Backbone.history.start({
-                        hashChange: true
-                    });
+                    Backbone.history.start();
                 };
 
                 window.TinyPlanner = TinyPlanner;

@@ -68,9 +68,9 @@
         },
 
         loadPlan: function() {
-            TinyPlanner.router.navigate('plan/'+this.model.id );
+            TinyPlanner.router.navigate('plan/'+this.model.id, { trigger: true } );
 
-            TinyPlanner.currentView = new TinyPlanner.Views.Plan({ el: '.tiny-planner', model: this.model });
+            // TinyPlanner.currentView = new TinyPlanner.Views.Plan({ el: '.tiny-planner', model: this.model });
         },
 
         render: function() {
