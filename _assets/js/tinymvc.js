@@ -308,6 +308,7 @@
     */
     TinyMVC.View = TinyMVC.Class.extend({
 
+        tagName: 'div',
         template: '',
 
     });

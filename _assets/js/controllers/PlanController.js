@@ -5,8 +5,7 @@
 */
 var PlanController = TinyMVC.Controller.extend({
 
-    // current_plan:   null,
-    steps:          [],
+    steps: [],
 
     initialize: function() {
         this.el = $2('.tiny-planner');
@@ -95,8 +94,6 @@ var PlanController = TinyMVC.Controller.extend({
 
         plan.save();
 
-        // this.current_plan = plan;
-
         // Go to the edit page
         tinyrouter.go('plan/edit/'+plan.id);
     },
@@ -110,8 +107,6 @@ var PlanController = TinyMVC.Controller.extend({
 
         plan.updateDuration();
         plan.updateStartTime();
-
-        // this.current_plan = plan;
 
         var startTime   = new Date(plan.startTime);
         var endTime     = new Date(plan.endTime);
@@ -134,12 +129,7 @@ var PlanController = TinyMVC.Controller.extend({
             var s           = steps[i],
                 startTime   = new Date(s.startTime);
 
-            step_html += _template('step', {
-                type: s.type,
-                text: s.text,
-                duration: s.getDurationInText(),
-                starttime: s.type == 'then' ? startTime.getHours() + ':' + (parseInt(startTime.getMinutes()) < 10 ? '0'+startTime.getMinutes() : startTime.getMinutes()) : ''
-            });
+            step_html += new TinyPlanner.StepItem({ model: steps[i]} ).render();
         };
 
         this.el.querySelector('.plan-steps').innerHTML = step_html;

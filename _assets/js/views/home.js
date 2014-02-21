@@ -1,5 +1,5 @@
 
-var Home = TinyMVC.View.extend({
+var TinyPlanner.Home = TinyMVC.View.extend({
 
     template: 'plans-index',
 
