@@ -2,34 +2,20 @@
     Plan
 */
 
-var Plan = Model.extend({
+var Plan = TinyMVC.Model.extend({
 
     // Global vars
 
     // Set the name of the 'DB row'.
     name:           'tp-plan',
 
-    id:             null,
-    title:          '',
     steps:          [],
-    startTime:  {
-        days:       0,
-        hours:      0,
-        minutes:    0
-    },
-    endTime: {
-        hours:      0,
-        minutes:    0
-    },
+    startTime:      0,
+    endTime:        0,
     duration: {
         days:       0,
         hours:      0,
         minutes:    0
-    },
-
-    // Init
-    init: function() {
-        this._super();
     },
 
     //
@@ -72,6 +58,15 @@ var Plan = Model.extend({
         return this.steps;
     },
 
+    findAll: function() {
+        return this.records.map(function(id) {
+            var p = new Plan;
+            p.find(id);
+
+            return p;
+        }, this);
+    },
+
     toJSON: function() {
         var step_ids = [];
 
@@ -104,39 +99,17 @@ var Plan = Model.extend({
     },
 
     updateStartTime: function () {
-        var days            = 0,
-            hours           = 0,
-            minutes         = 0,
-            startminutes    = ((this.endTime.hours * 60) + this.endTime.minutes) - this.getDurationInMinutes();
 
-        if (startminutes < 0) {
-            startminutes = 0 - startminutes;
-            days    = Math.floor((startminutes / 60) / 24);
-            hours   = Math.floor(((1 - (((startminutes / 60) / 24) - days)) * 60 * 24) / 60);
-            minutes = Math.round(((1 - (((startminutes / 60) / 24) - days)) * 60 * 24) - (hours * 60));
-        } else {
-            hours   = Math.floor(startminutes / 60);
-            minutes = startminutes - (Math.floor(startminutes / 60) * 60);
-        }
-
-        this.startTime = {
-            days:       days,
-            hours:      hours,
-            minutes:    minutes
-        }
-
-        var sh = this.startTime.hours,
-            sm = this.startTime.minutes;
+        this.startTime = this.endTime - ( this.getDurationInMinutes() * 60 * 1000 );
 
         // Now update the step start times.
+        var st = this.startTime;
+
         for (var i = 0; i < this.steps.length; i++) {
-            this.steps[i].setStartTime(sh, sm);
+            this.steps[i].setStartTime(st);
 
             if( this.steps[i].type == 'then' ) {
-                var et = this.steps[i].getEndTime();
-
-                sh = et.hours;
-                sm = et.minutes;
+                st = this.steps[i].getEndTime();
             }
         }
 
@@ -155,12 +128,11 @@ var Plan = Model.extend({
             minutes = minutes - (Math.floor(minutes / 60) * 60);
         }
 
-        this.endTime = {
-            hours:      hours,
-            minutes:    minutes
-        }
+        var current_date    = new Date();
+        var start_date      = new Date( current_date.getFullYear(), current_date.getMonth(), current_date.getDate(), hours, minutes, current_date.getSeconds() );
 
-        this.updateStartTime();
+        this.endTime    = start_date.valueOf();
+        this.startTime  = this.endTime;
     },
 
     getDurationInMinutes: function () {

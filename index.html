@@ -35,11 +35,11 @@
         </main>
         
         <!--
-            Templates
+            Views
         -->
 
         <script type="text/html" id="template-plans-index">
-            <header class="onboarding">
+            <div class="onboarding">
                 <div class="field">
                     <label>I’m planning
                         <input type="text" name="plan-title" required placeholder="to serve dinner, world domination" x-webkit-speech>
@@ -74,29 +74,36 @@
                     </div>
                 </div>
                 <button class="field">Create</button>
-            </header>
+            </div>
 
             <h3 class="prose">My plans</h3>
-            <ul>
-                <% plans %>
-            </ul>
+            
+            <div class="plans"></div>
+            
             <br><br><br>
+            
             <p class="small"><a href="/about.html"rel="help">About TinyPlanner</a></p>
         </script>
 
+        <script type="text/view" id="template-plan">
+            <div class="plan">
+                <a href="#plan/edit/{{ id }}">{{ title }}</a>
+            </div>
+        </script>
+
         <script type="text/html" id="template-plans-edit">
-            <header>
-                <h2><% title %></h2>
+            <header class="onboarding">
+                <h2>{{ title }}</h2>
                 <div class="timing">
                     <div class="split">
                         <div class="split-even starttime">
-                            Start at <span class="timing-value"><% starttime %></span>am
+                            Start at <span class="timing-value">{{ starttime }}</span>
                         </div>
                         <div class="split-even endtime">
-                            Finish by <span class="timing-value"><% endtime %></span>pm
+                            Finish by <span class="timing-value">{{ endtime }}</span>
                         </div>
                     </div>
-                    <p>You need <% totalduration %></p>
+                    <p>You need {{ totalduration }}</p>
                 </div>
             </header>
 
@@ -175,18 +182,18 @@
                 <div class="split">
                     <div class="split-minor">
                         <div class="step-time">
-                            <h3 class="step-time-start"><% starttime %></h3>
+                            <h3 class="step-time-start">{{ starttime }}</h3>
                             <span class="step-time-meridian"></span>
                         </div>
                     </div>
                     <div class="split-major">
                         <div class="step-content">
                             <div class="step-content-meta">
-                                <span class="meta-type"><% type %></span>
-                                <span class="meta-duration"><% duration %></span>
+                                <span class="meta-type">{{ type }}</span>
+                                <span class="meta-duration">{{ duration }}</span>
                             </div>
                             <div class="step-content-text">
-                                <p class="text-<% type %>"><% text %></p>
+                                <p class="text-{{ type }}">{{ text }}</p>
                             </div>
                         </div>
                     </div>
@@ -201,24 +208,33 @@
 
         <!-- Helpers -->
         <script src="_assets/js/helpers.js"></script>
-        <script src="_assets/js/class.js"></script>
+        <script src="_assets/js/tinymvc.js"></script>
 
         <!-- Models -->
-        <script src="_assets/js/models/Model.js"></script>
         <script src="_assets/js/models/Plan.js"></script>
         <script src="_assets/js/models/Step.js"></script>
 
         <!-- Controllers -->
-        <script src="_assets/js/controllers/BaseController.js"></script>
         <script src="_assets/js/controllers/PlanController.js"></script>
         <script src="_assets/js/controllers/StepController.js"></script>
-        
-        <!-- Router -->
-        <script src="_assets/js/tinyrouter.js"></script>
 
         <script>
-            // tiny_planner = new Planner();
-            // k.showLists();
+            (function() {
+
+                var routes = {
+                    ''              : 'Plan',
+                    'plan'          : 'Plan',
+                    'plan/new'      : 'Plan@new',
+                    'plan/edit'     : 'Plan@edit',
+                    'step/create'   : 'Step@create',
+                }
+
+                window.addEventListener("load", function() {
+                    window.tinyrouter = tinyrouter(routes);
+                });
+
+            })();
         </script>
+
     </body>
 </html>

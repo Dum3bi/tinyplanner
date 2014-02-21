@@ -3,7 +3,11 @@
 
     Handles all logic for the steps.
 */
-var StepController = BaseController.extend({
+var StepController = TinyMVC.Controller.extend({
+
+    initialize: function() {
+        this.el = $2('.tiny-planner');
+    },
 
     create: function(id) {
         // Get the plan
@@ -18,8 +22,9 @@ var StepController = BaseController.extend({
                 text:       Input.get('step-title'),
                 duration:   parseInt(Input.get('step-duration')),
                 unit:       Input.get('step-unit')
-            },
-            step = new Step;
+            };
+        
+        var step = new Step;
 
         // Validation
         var errors = false;
@@ -51,13 +56,10 @@ var StepController = BaseController.extend({
         var step_html = '';
 
         for (var i = 0; i < steps.length; i++) {
-            var s = steps[i];
-            step_html += _template('step', {
-                type: s.type,
-                text: s.text,
-                duration: s.getDurationInText(),
-                starttime: s.type == 'then' ? s.startTime.hours + ':' + (s.startTime.minutes < 10 ? '0'+ s.startTime.minutes : s.startTime.minutes) : ''
-            });
+            var s           = steps[i],
+                startTime   = new Date(s.startTime);
+
+            step_html += new TinyPlanner.StepItem({ model: steps[i]} ).render();
         };
 
         this.el.querySelector('.plan-steps').innerHTML = step_html;

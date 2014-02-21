@@ -3,16 +3,13 @@
 
     Handles all logic for the plans.
 */
-'use strict'
+var PlanController = TinyMVC.Controller.extend({
 
-var PlanController = BaseController.extend({
-
-    current_plan:   null,
+    // current_plan:   null,
     steps:          [],
 
-    // Constructor
-    init: function() {
-        //
+    initialize: function() {
+        this.el = $2('.tiny-planner');
     },
 
     // Home page
@@ -27,15 +24,16 @@ var PlanController = BaseController.extend({
         if( plans.length ) {
             plans_html = '';
             for (var i = 0; i < plans.length; i++) {
-                plans_html += '<li class="step"><a href="#plan/edit/'+plans[i].id+'">'+plans[i].title+'</a></li>';
+                plans_html += _template('plan', { id: plans[i].id, title: plans[i].title });
             }
         }
         else {
-            plans_html = '<li><p>You haven\'t created any plans yet, but that\'s OK!</p></li>';
+            plans_html = '<div><p>You haven’t created any plans yet, but that’s OK!</p></div>';
         }
 
         // Show the view
-        this.el.innerHTML = _template('plans-index', { plans: plans_html });
+        this.el.innerHTML = _template('plans-index');
+        this.el.querySelector('.plans').innerHTML = plans_html;
 
         // Create the view events
         var events = function(e) {
@@ -89,11 +87,6 @@ var PlanController = BaseController.extend({
         if( errors )
             return;
 
-        // Final logic
-        if( meridian == 'pm' ) {
-            hours = hours + 12;
-        }
-
         // Create a new plan object
         var plan = new Plan;
 
@@ -102,7 +95,7 @@ var PlanController = BaseController.extend({
 
         plan.save();
 
-        this.current_plan = plan;
+        // this.current_plan = plan;
 
         // Go to the edit page
         tinyrouter.go('plan/edit/'+plan.id);
@@ -118,13 +111,16 @@ var PlanController = BaseController.extend({
         plan.updateDuration();
         plan.updateStartTime();
 
-        this.current_plan = plan;
+        // this.current_plan = plan;
+
+        var startTime   = new Date(plan.startTime);
+        var endTime     = new Date(plan.endTime);
 
         // Show the edit view
         this.el.innerHTML = _template('plans-edit', {
             title:      plan.title,
-            starttime:  plan.startTime.hours    +':'+ ( parseInt(plan.startTime.minutes) < 10 ? '0'+plan.startTime.minutes : plan.startTime.minutes),
-            endtime:    plan.endTime.hours      +':'+ ( parseInt(plan.endTime.minutes) < 10 ? '0'+plan.endTime.minutes : plan.endTime.minutes),
+            starttime:  startTime.getHours()    +':'+ (parseInt(startTime.getMinutes()) < 10    ? '0'+startTime.getMinutes()    : startTime.getMinutes()),
+            endtime:    endTime.getHours()      +':'+ (parseInt(endTime.getMinutes()) < 10      ? '0'+endTime.getMinutes()      : endTime.getMinutes()),
             totalduration: plan.getDurationInText()
         });
 
@@ -135,12 +131,14 @@ var PlanController = BaseController.extend({
         var step_html = '';
 
         for (var i = 0; i < steps.length; i++) {
-            var s = steps[i];
+            var s           = steps[i],
+                startTime   = new Date(s.startTime);
+
             step_html += _template('step', {
                 type: s.type,
                 text: s.text,
                 duration: s.getDurationInText(),
-                starttime: s.type == 'then' ? s.startTime.hours + ':' + (s.startTime.minutes < 10 ? '0'+ s.startTime.minutes : s.startTime.minutes) : ''
+                starttime: s.type == 'then' ? startTime.getHours() + ':' + (parseInt(startTime.getMinutes()) < 10 ? '0'+startTime.getMinutes() : startTime.getMinutes()) : ''
             });
         };
 

@@ -57,7 +57,7 @@ ul, ol, li {
 	padding: 0;
 	list-style: none;
 }
-li + li, li:last-of-type {
+.step + .step, .plan + .plan {
 	border-top: 0.2em solid rgba(0,0,0,0.25);
 }
 
@@ -107,9 +107,12 @@ li + li, li:last-of-type {
 	color: #DC5038;
 }
 
-.step {
+.step, .plan {
 	padding: 1em;
     background: #596877;
+}
+.plan a {
+	display: block;
 }
 .step-time {
 	padding-top: 2em;
@@ -212,7 +215,7 @@ li + li, li:last-of-type {
 	padding: 1em;
 }
 
-[role="main"] header {
+.onboarding {
 	background-color: rgba(0,0,0,0.6);
 	color: #fff;
 	padding: 1em;

@@ -2,7 +2,7 @@
     Step
  *************/
 
-var Step = Model.extend({
+var Step = TinyMVC.Model.extend({
 
     // Global vars
     name:       'tp-step',
@@ -15,11 +15,6 @@ var Step = Model.extend({
         days:       0,
         hours:      0,
         minutes:    0
-    },
-
-    // Init
-    init: function(params) {
-        this._super();
     },
 
     create: function(params) {
@@ -67,36 +62,16 @@ var Step = Model.extend({
         }
     },
 
-    setStartTime: function (hours, minutes) {
-        hours   = hours     || 0;
-        minutes = minutes   || 0;
-
-        if (hours !== Math.round(hours)) {
-            minutes = minutes + ((hours - Math.floor(hours)) * 60);
-            hours   = Math.floor(hours);
-        }
-        if (minutes > 60) {
-            hours   = hours + Math.floor(minutes / 60);
-            minutes = minutes - (Math.floor(minutes / 60) * 60);
-        }
-        this.startTime = {
-            hours:      hours,
-            minutes:    minutes
-        }
+    setStartTime: function (timeStamp) {
+        this.startTime = timeStamp;
     },
 
     getEndTime: function () {
-        var totalMinutes    = (this.startTime.hours * 60) + this.startTime.minutes + (this.duration.days * 24 * 60) + (this.duration.hours * 60) + this.duration.minutes,
-            hours           = Math.floor(totalMinutes / 60),
-            minutes         = totalMinutes - (hours * 60);
+        // convert duration to milliseconds
+        var duration_ms = (this.duration.hours * 60 * 60 * 1000) + (this.duration.minutes * 60 * 1000),
+            endTime_ms  = this.startTime + duration_ms;
 
-        if (hours > 24) {
-            hours = hours - 24;
-        }
-        return {
-            hours:      hours,
-            minutes:    minutes
-        };
+        return endTime_ms;
     },
 
     getDurationInMinutes: function () {

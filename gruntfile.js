@@ -8,18 +8,11 @@ module.exports = function(grunt) {
             // 2. Configuration for concatinating files goes here.
             dist: {
                 src: [
-                    '_assets/js/class.js',
                     '_assets/js/helpers.js',
+                    '_assets/js/tinymvc.js',
 
-                    '_assets/js/models/Model.js',
-                    '_assets/js/models/Plan.js',
-                    '_assets/js/models/Step.js',
-
-                    '_assets/js/controllers/BaseController.js',
-                    '_assets/js/controllers/PlanController.js',
-                    '_assets/js/controllers/StepController.js',
-
-                    '_assets/js/tinyrouter.js'
+                    '_assets/js/models/*',
+                    '_assets/js/controllers/*',
                 ],
                 dest: '_assets/build/js/production.js',
             }
