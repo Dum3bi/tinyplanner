@@ -11,53 +11,6 @@ var PlanController = TinyMVC.Controller.extend({
         this.el = $2('.tiny-planner');
     },
 
-    // Home page
-    index: function() {
-        var self = this;
-
-        // Kind of a hacky way to mimic a static function.
-        var plans       = (new Plan).findAll();
-        var plans_html  = '';
-
-        // If there are plans saved, 
-        if( plans.length ) {
-            plans_html = '';
-            for (var i = 0; i < plans.length; i++) {
-                plans_html += _template('plan', { id: plans[i].id, title: plans[i].title });
-            }
-        }
-        else {
-            plans_html = '<div><p>You haven’t created any plans yet, but that’s OK!</p></div>';
-        }
-
-        // Show the view
-        this.el.innerHTML = _template('plans-index');
-        this.el.querySelector('.plans').innerHTML = plans_html;
-
-        // Create the view events
-        var events = function(e) {
-            if( e.keyCode == 13 ) {
-                // save the plan
-                self.create();
-            }
-            else
-                return;
-        };
-
-        // Load the view events
-        this.loadEvents(events);
-
-        var ce = function(e) {
-
-            if( e.target.className == 'field' ) {
-                // save the plan
-                self.create();
-            }
-        }
-
-        this.loadClickEvents(ce);
-    },
-
     create: function() {
         // Get the inputs
         var title       = Input.get('plan-title'),
@@ -108,55 +61,14 @@ var PlanController = TinyMVC.Controller.extend({
         plan.updateDuration();
         plan.updateStartTime();
 
-        var startTime   = new Date(plan.startTime);
-        var endTime     = new Date(plan.endTime);
+        var startTime   = new Date(plan.startTime),
+            endTime     = new Date(plan.endTime);
 
-        // Show the edit view
-        this.el.innerHTML = _template('plans-edit', {
-            title:      plan.title,
-            starttime:  startTime.getHours()    +':'+ (parseInt(startTime.getMinutes()) < 10    ? '0'+startTime.getMinutes()    : startTime.getMinutes()),
-            endtime:    endTime.getHours()      +':'+ (parseInt(endTime.getMinutes()) < 10      ? '0'+endTime.getMinutes()      : endTime.getMinutes()),
-            totalduration: plan.getDurationInText()
-        });
+        plan.startTime_text  = startTime.getHours()    +':'+ (parseInt(startTime.getMinutes()) < 10    ? '0'+startTime.getMinutes()    : startTime.getMinutes());
+        plan.endTime_text    = endTime.getHours()      +':'+ (parseInt(endTime.getMinutes()) < 10      ? '0'+endTime.getMinutes()      : endTime.getMinutes());
 
-        // Show the step form
-        this.el.querySelector('.new-step-form').innerHTML = _template('add-first-step');
-
-        // Show the steps
-        var step_html = '';
-
-        for (var i = 0; i < steps.length; i++) {
-            var s           = steps[i],
-                startTime   = new Date(s.startTime);
-
-            step_html += new TinyPlanner.StepItem({ model: steps[i]} ).render();
-        };
-
-        this.el.querySelector('.plan-steps').innerHTML = step_html;
-
-        // replace the form with the form template
-        this.el.querySelector('.new-step-form').innerHTML = _template('add-step');
-
-
-        // Create the view events
-        var events = function(e) {
-            if( e.keyCode == 13 ) {
-                // self.saveStep();
-                tinyrouter.route('step/create/'+plan.id);
-            }
-            else return;
-        };
-
-        // Load the view events
-        this.loadEvents(events);
-
-        var ce = function(e) {
-            if( e.target.nodeName.toLowerCase() == 'button' )
-                // self.saveStep();
-                tinyrouter.route('step/create/'+plan.id);
-        }
-
-        this.loadClickEvents(ce);
+        // Render the edit/view... errr... view.
+        new TinyPlanner.PlanView({ el: this.el, plan: plan, steps: steps }).render();
     },
 
 });

@@ -114,6 +114,9 @@ ul, ol, li {
 .plan a {
 	display: block;
 }
+.plan a span {
+	float: right;
+}
 .step-time {
 	padding-top: 2em;
 }

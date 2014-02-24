@@ -175,6 +175,9 @@
     var TinyMVC = {};
 
     TinyMVC.Class = Class.extend({
+
+        el: $2('body'),
+
         init: function(args) {
             if( args && typeof args == 'object' ) {
                 for( var prop in args ) {
@@ -189,26 +192,17 @@
     })
 
     TinyMVC.Controller = TinyMVC.Class.extend({
-        el:         null,
-        events:     [],
+        
+        init: function(args) {
+            this._super(args);
 
-        //
-        loadEvents: function(events) {
-            for (var i = 0; i < this.events.length; i++) {
-                this.el.removeEventListener('keypress', this.events[i], false);
-            };
-            this.el.addEventListener('keypress', events, false);
-            this.events.push(events);
-        },
+            // remove bound events
+            // var old_element = this.el;
+            // var new_element = old_element.cloneNode(true);
+            // old_element.parentNode.replaceChild(new_element, old_element);
 
-        //
-        loadClickEvents: function(events) {
-            for (var i = 0; i < this.events.length; i++) {
-                this.el.removeEventListener('click', this.events[i], false);
-            };
-            this.el.addEventListener('click', events, false);
-            this.events.push(events);
-        },
+            // this.el = new_element;
+        }
     });
 
     /*
@@ -220,20 +214,11 @@
         name:   '',
         id:     null,
 
-        init: function(params) {
+        init: function(args) {
+            this._super(args);
 
             this.store      = localStorage.getItem(this.name) || '';
             this.records    = (this.store && this.store.split(",")) || [];
-
-            if( params && typeof params == 'object' ) {
-                for( var prop in params ) {
-                    this[prop] = params[prop];
-                }
-            }
-
-            if( this.initialize ) {
-                this.initialize();
-            }
         },
 
         // Generate four random hex digits.
@@ -304,12 +289,89 @@
 
 
     /*
-        View
+        TinyMVC View
+
+        These take on a dual purpose. While all views function in the same way, they can be used for two main ideas.
+
+        1.  A view controller, so to speak. A collection of smaller view or partials. You could have a view for the Home Page, for instance, but that view is made up of several smaller views, maybe a header, a footer, and main area (which could be further sub-divided).
+            One view can simply be created to manage the partials.
+
+            HomePage = TinyMVC.View.extend({
+                
+                render: function() {
+                    var view = '';
+                    
+                    // Collect the subviews.
+                    view += new subView().render();
+                    view += new subView2().render();
+
+                    this.el.innerHTML = view;
+                }
+            });
+
+        2.  Partials.
+            The smaller elements of a 'page'. Where certain logic and events are more tightly coupled, like a form.
+
+            e.g.
+
+
+            MyForm = TinyMVC.View.extend({
+
+                events: {
+                    'click': 'myEvent'
+                },
+
+                myEvent: function(e) {
+                    // do stuff
+                },
+
+                render: function() {
+                    return _template('my-form');
+                }
+            });
+
+            var myForm = new MyForm.render();
+
+        You also do not need to use a TinyMVC.View to render a view. These are merely for convenience to group logic. You bypass it all and use _template directly:
+        var view = '';
+        view += _template('my-template', { var: 'myVar' });
     */
     TinyMVC.View = TinyMVC.Class.extend({
 
         tagName: 'div',
         template: '',
+
+        events: {},
+
+        init: function(args) {
+            this._super(args);
+
+            if( Object.keys(this.events).length ) {
+                for(var prop in this.events) {
+                    var ev  = prop.split(' ')[0],
+                        elm = prop.split(' ')[1] || null;
+
+                    if( elm ) {
+                        var self = this;
+
+                        this.el.addEventListener(ev, function(e) {
+                            var current_elm = e.target;
+                            var re          = new RegExp('\\b'+elm.replace('.', '')+'\\b');
+
+                            while( current_elm != this.el && current_elm.nodeName != 'body' ) {
+                                if( re.test(current_elm.classList) )
+                                    self[self.events[prop]](e);
+
+                                current_elm = current_elm.parentNode;
+                            }
+                        }, false);
+                    }
+                    else {
+                        this.el.addEventListener(prop, this[this.events[prop]].bind(this), false);
+                    }
+                }
+            }
+        }
 
     });
 

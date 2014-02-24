@@ -38,8 +38,8 @@
             Views
         -->
 
-        <script type="text/html" id="template-plans-index">
-            <div class="onboarding">
+        <script type="text/template" id="template-plan-form">
+            <div class="plan-form onboarding">
                 <div class="field">
                     <label>I’m planning
                         <input type="text" name="plan-title" required placeholder="to serve dinner, world domination" x-webkit-speech>
@@ -75,24 +75,32 @@
                 </div>
                 <button class="field">Create</button>
             </div>
+        </script>
 
-            <h3 class="prose">My plans</h3>
-            
-            <div class="plans"></div>
-            
-            <br><br><br>
-            
-            <p class="small"><a href="/about.html"rel="help">About TinyPlanner</a></p>
+        <script type="text/template" id="template-home-plans">
+            <section>
+                <h3 class="prose">My plans</h3>
+
+                <div class="plans">
+                    {{ plans }}
+                </div>
+            </section>
+        </script>
+
+        <script type="text/template" id="template-footer">
+            <footer class="page-footer">
+                <p class="small"><a href="/about.html"rel="help">About TinyPlanner</a></p>
+            </footer>
         </script>
 
         <script type="text/view" id="template-plan">
             <div class="plan">
-                <a href="#plan/edit/{{ id }}">{{ title }}</a>
+                <a href="#plan/edit/{{ id }}">{{ title }} <span class="delete">x</span></a>
             </div>
         </script>
 
         <script type="text/html" id="template-plans-edit">
-            <header class="onboarding">
+            <div class="onboarding">
                 <h2>{{ title }}</h2>
                 <div class="timing">
                     <div class="split">
@@ -105,11 +113,17 @@
                     </div>
                     <p>You need {{ totalduration }}</p>
                 </div>
-            </header>
-
-            <ol class="plan-steps"></ol>
+            </div>
 
             <div class="new-step-form"></div>
+        </script>
+
+        <script type="text/template" id="template-plan-steps">
+            <section>
+                <ol class="plan-steps">
+                    {{ steps }}
+                </ol>
+            </section>
         </script>
 
         <script type="text/html" id="template-add-first-step">
@@ -206,6 +220,25 @@
             Scripts
         -->
 
+        <script>
+            (function() {
+
+                var routes = {
+                    ''              : 'Home',
+                    'plan/create'   : 'Plan@create',
+                    'plan/edit'     : 'Plan@edit',
+                    'step/create'   : 'Step@create',
+                }
+
+                TinyPlanner = {};
+
+                window.addEventListener("load", function() {
+                    window.tinyrouter = tinyrouter(routes);
+                });
+
+            })();
+        </script>
+
         <!-- Helpers -->
         <script src="_assets/js/helpers.js"></script>
         <script src="_assets/js/tinymvc.js"></script>
@@ -215,26 +248,14 @@
         <script src="_assets/js/models/Step.js"></script>
 
         <!-- Controllers -->
+        <script src="_assets/js/controllers/HomeController.js"></script>
         <script src="_assets/js/controllers/PlanController.js"></script>
         <script src="_assets/js/controllers/StepController.js"></script>
 
-        <script>
-            (function() {
-
-                var routes = {
-                    ''              : 'Plan',
-                    'plan'          : 'Plan',
-                    'plan/new'      : 'Plan@new',
-                    'plan/edit'     : 'Plan@edit',
-                    'step/create'   : 'Step@create',
-                }
-
-                window.addEventListener("load", function() {
-                    window.tinyrouter = tinyrouter(routes);
-                });
-
-            })();
-        </script>
+        <!-- Views -->
+        <script src="_assets/js/views/home.js"></script>
+        <script src="_assets/js/views/plan.js"></script>
+        <script src="_assets/js/views/step.js"></script>
 
     </body>
 </html>
