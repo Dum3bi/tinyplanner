@@ -57,9 +57,7 @@ ul, ol, li {
 	padding: 0;
 	list-style: none;
 }
-.step + .step, .plan + .plan {
-	border-top: 0.2em solid rgba(0,0,0,0.25);
-}
+
 
 .main.prose {
     color: rgb(38,44,50);
