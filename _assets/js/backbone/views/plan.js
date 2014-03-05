@@ -14,26 +14,7 @@
         },
 
         initialize: function () {
-
-            // var sc = new TinyPlanner.Collections.Steps;
-
-            // this.model.get('steps').forEach(function(id) {
-            //     var step = new TinyPlanner.Models.Step();
-            //     step.id = id;
-            //     step.fetch().then(function() { sc.add( step ) });
-            // });
-
-            // this.model.set('steps', sc);
-
-            console.log(this.model)
-
-            if( !this.model.get('steps').length ) {
-                this.model.set('steps', new TinyPlanner.Collections.Steps);
-            }
-
             this.render();
-
-            new StepList({ el: '.steps', collection: this.model.get('steps') }).render();
         },
 
         createStep: function() {
@@ -41,21 +22,33 @@
                 return;
             }
 
-            console.log(this.model)
-
-            var s = this.model.get('steps').create({
-                title: $('[name=step-title]').val().trim()
+            var s = this.model.steps.create({
+                text:       $('[name=step-title]').val().trim(),
+                duration:   {
+                    days: 0,
+                    hours: 0,
+                    minutes: $('[name=step-duration]').val().trim()
+                }
             });
 
-            // this.model.set('steps', this.model.get('steps').push(s.id) );
+            var arr = this.model.get('step_ids');
+            arr.push(s.id)
+
+            // store the id in the plan's step_id array
+            this.model.set('step_ids', arr);
             this.model.save();
 
             $('[name=step-title]').val('');
+            $('[name=step-duration]').val('');
         },
 
         render: function(id) {
+            log( this.model )
+            
             this.$el.html( this.template({ plan: this.model }) );
             this.$('.new-step-form').html( _.template( $('#template-add-step').html() ) );
+
+            new StepList({ el: '.steps', collection: this.model.steps }).render();
             
             return this;
         },
@@ -92,7 +85,8 @@
         template: _.template( $("#template-step").html() ),
 
         render: function() {
-            this.$el.html( this.template( { starttime: '00:00', type: 'First', step: this.model.toJSON() } ) );
+            log( this.model )
+            this.$el.html( this.template( { type: 'First', step: this.model } ) );
             
             return this;
         },

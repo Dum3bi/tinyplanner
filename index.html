@@ -97,7 +97,7 @@
                 <div class="timing">
                     <div class="split">
                         <div class="split-even starttime">
-                            Start at <span class="timing-value"><%= plan.getStartTime() %></span>am
+                            Start at <span class="timing-value"><%= plan.startTime %></span>am
                         </div>
                         <div class="split-even endtime">
                             Finish by <span class="timing-value"><%- plan.get('endTime') %></span>pm
@@ -181,7 +181,7 @@
             <div class="split">
                 <div class="split-minor">
                     <div class="step-time">
-                        <h3 class="step-time-start"><%= starttime %></h3>
+                        <h3 class="step-time-start"><%= step.startTime %></h3>
                         <span class="step-time-meridian"></span>
                     </div>
                 </div>
@@ -189,10 +189,10 @@
                     <div class="step-content">
                         <div class="step-content-meta">
                             <span class="meta-type"><%= type %></span>
-                            <span class="meta-duration"><%= step.duration.days %></span>
+                            <span class="meta-duration"><%= step.get('duration').minutes %></span>
                         </div>
                         <div class="step-content-text">
-                            <p class="text-<% type %>"><%= step.text %></p>
+                            <p class="text-<% type %>"><%= step.get('text') %></p>
                         </div>
                     </div>
                 </div>
@@ -204,6 +204,12 @@
             Scripts
         -->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+
+        <script>
+            window.log = function(log) {
+                return console.log(log);
+            }
+        </script>
 
         <!-- Backbone -->
         <script src="_assets/js/backbone/underscore.js"></script>

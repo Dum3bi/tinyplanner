@@ -27,6 +27,12 @@
                 plan
                     .fetch()
                     .then(function() {
+                        
+                        // update the plan details
+                        plan.getSteps();
+                        plan.updateDuration();
+                        plan.updateStartTime();
+
                         TinyPlanner.currentView = new TinyPlanner.Views.Plan({ el: '.tiny-planner', model: plan });
                     });
                 
