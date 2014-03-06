@@ -6,7 +6,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <title>TinyPlanner &#183; Work out when you need to start something</title>
 
-        <link rel="stylesheet" href="_assets/css/global.css">
+        <link rel="stylesheet" href="_assets/build/css/global.css">
 
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
         <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
@@ -20,252 +20,99 @@
     </head>
     <body>
 
-        <header role="banner">
-            <h1>
-                <a href="/" role="link">TinyPlanner</a>
-            </h1>
-        </header><!-- /@banner -->
-
         <main class="main" role="main">
 
             <div class="tiny-planner">
-                
+
             </div>
-                
+
         </main>
-        
+
         <!--
             Views
         -->
 
-        <script type="text/template" id="template-plan-form">
-            <div class="plan-form onboarding">
-                <div class="field">
-                    <label>I’m planning
-                        <input type="text" name="plan-title" required placeholder="to serve dinner, world domination" x-webkit-speech>
-                    </label>
-                </div>
-                
-                <div class="field">
-                    To be finished by
-                    <div class="split">
-                        <div class="split-major">
-                            <div class="split">
-                                <div class="split-even">
-                                    <input type="number" name="plan-hour" min="1" max="12" pattern="[0-9]" placeholder="hour">
-                                </div>
-                                <div class="split-even">
-                                    <input type="number" name="plan-minute" min="0" max="59" pattern="[0-9]" step="15" placeholder="minute">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="split-minor">
-                            <div class="toggle split">
-                                <label class="split-even">
-                                    <input type="radio" name="meridian" value="am">
-                                    <span class="toggle-label">am</span>
-                                </label>
-                                <label class="split-even">
-                                    <input type="radio" name="meridian" value="pm" checked>
-                                    <span class="toggle-label">pm</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <button class="field">Create</button>
-<<<<<<< HEAD
+        <script type="text/template" id="template-home">
+            <div class="page">
+                <div class="plans"></div>
             </div>
         </script>
 
-        <script type="text/template" id="template-home-plans">
-            <section>
-                <h3 class="prose">My plans</h3>
-
-                <div class="plans">
-                    {{ plans }}
-                </div>
-            </section>
-        </script>
-
-        <script type="text/template" id="template-footer">
-            <footer class="page-footer">
-                <p class="small"><a href="/about.html"rel="help">About TinyPlanner</a></p>
-            </footer>
-        </script>
-
-        <script type="text/view" id="template-plan">
-            <div class="plan">
-                <a href="#plan/edit/{{ id }}">{{ title }} <span class="delete">x</span></a>
-            </div>
-=======
-            </header>
-
-            <h3 class="prose">My plans</h3>
-            
-            <div class="plans">
-                <%= plans %>
-            </div>
-            
-            <br><br><br>
-
-            <p class="small"><a href="/about.html"rel="help">About TinyPlanner</a></p>
->>>>>>> backbone
-        </script>
-
+        <!-- Models -->
         <script type="text/template" id="template-plan">
-            <span><%- title %></span>
+            <div class="buttons">
+                <div class="delete"></div>
+            </div>
+            <div class="cover-panel">
+                <div class="plan-title"><%= plan.get('title') %></div>
+                <div class="plan-duration"><%= plan.getDurationInText() %></div>
+            </div>
         </script>
 
-        <script type="text/html" id="template-plans-edit">
-<<<<<<< HEAD
-            <div class="onboarding">
-                <h2>{{ title }}</h2>
-                <div class="timing">
-                    <div class="split">
-                        <div class="split-even starttime">
-                            Start at <span class="timing-value">{{ starttime }}</span>
-                        </div>
-                        <div class="split-even endtime">
-                            Finish by <span class="timing-value">{{ endtime }}</span>
-                        </div>
+        <script type="text/template" id="template-step">
+            <div class="buttons">
+                <div class="delete"></div>
+            </div>
+            <div class="cover-panel">
+                <div class="step-text"><%= step.get('text') %></div>
+                <div class="step-starttime"><%= step.getStartTimeInText() %></div>
+                <div class="step-duration"><%= step.getDurationInText() %></div>
+            </div>
+        </script>
+
+        <!-- Partials -->
+
+        <script type="text/template" id="template-add-plan">
+            <div class="add-plan">
+                <span>Add a new plan</span>
+            </div>
+        </script>
+
+        <script type="text/template" id="template-add-step">
+            <div class="add-step">
+                <span>Add a new task</span>
+            </div>
+        </script>
+
+        <script type="text/template" id="template-new-plan">
+            <div class="page orange">
+                <div class="inner">
+                    <div class="new-plan">
+                        <label>Name your plan</label>
+                        <input type="text" name="plan-name">
+
+                        <button>Done</button>
                     </div>
-                    <p>You need {{ totalduration }}</p>
                 </div>
             </div>
-=======
-            <header>
-                <h2><%= plan.get('title') %></h2>
-                <div class="timing">
-                    <div class="split">
-                        <div class="split-even starttime">
-                            Start at <span class="timing-value"><%= plan.startTime %></span>am
-                        </div>
-                        <div class="split-even endtime">
-                            Finish by <span class="timing-value"><%- plan.get('endTime') %></span>pm
-                        </div>
-                    </div>
-                    <p>You need <%= plan.get('duration').hours %></p>
-                </div>
-            </header>
-
-            <div class="steps"></div>
->>>>>>> backbone
-
-            <div class="new-step-form"></div>
         </script>
 
-        <script type="text/template" id="template-plan-steps">
-            <section>
-                <ol class="plan-steps">
-                    {{ steps }}
-                </ol>
-            </section>
+        <script type="text/template" id="template-view-plan">
+            <div class="view-plan page">
+                <div class="plan-header">
+                    <div class="inner">
+                        <span class="back"></span>
+                        <div class="plan-title"><%= plan.get('title') %></div>
+                    </div>
+                </div>
+
+                <div class="plan-steps"></div>
+            </div>
         </script>
 
-        <script type="text/html" id="template-add-first-step">
-            <div class="step add-step">
+        <script type="text/template" id="template-new-step">
+            <div class="new-step">
+                <div class="inner">
+                    <input type="text" name="step-title">
 
-                <div class="split field">
-                    <span>First</span>
-                </div>
+                    <input type="text" name="step-duration" placeholder="duration">
 
-                <textarea class="field" name="step-title" placeholder="bring to the boil, go to the station" required></textarea>
-                
-                <div class="split field">
-                    <div class="split-even">
-                        <input type="number" pattern="[0-9]" name="step-duration" placeholder="e.g. 15" required>
+                    <label>Hands off</label>
+                    <div class="toggle">
+                        <input type="checkbox" name="step-type" value="1">
                     </div>
-                    <div class="split-even split toggle">
-                        <label class="split-even">
-                            <input type="radio" name="step-unit" value="minutes" checked>
-                            <span class="toggle-label">Mins</span>
-                        </label>
-                        <label class="split-even">
-                            <input type="radio" name="step-unit" value="hours">
-                            <span class="toggle-label">Hours</span>
-                        </label>
-                    </div>
-                </div>
 
-                <button class="field">Add step</button>
-            <div>
-        </script>
-
-        <script type="text/html" id="template-add-step">
-            <div class="step add-step">
-
-                <div class="split toggle field">
-                    <label class="split-even">
-                        <input type="radio" name="step-type" value="then" checked>
-                        <span class="toggle-label">Then</span>
-                    </label>
-                    <label class="split-even">
-                        <input type="radio" name="step-type" value="meanwhile">
-                        <span class="toggle-label">And also</span>
-                    </label>
-                </div>
-
-                <textarea class="field" name="step-title" placeholder="bring to the boil, go to the station" required></textarea>
-                
-                <div class="split field">
-                    <div class="split-even">
-                        <input type="number" pattern="[0-9]" name="step-duration" placeholder="e.g. 15" required>
-                    </div>
-                    <div class="split-even split toggle">
-                        <label class="split-even">
-                            <input type="radio" name="step-unit" value="minutes" checked>
-                            <span class="toggle-label">Mins</span>
-                        </label>
-                        <label class="split-even">
-                            <input type="radio" name="step-unit" value="hours">
-                            <span class="toggle-label">Hours</span>
-                        </label>
-                    </div>
-                </div>
-
-                <button class="field">Add step</button>
-            <div>
-        </script>
-
-        <script type="text/html" id="template-step">
-<<<<<<< HEAD
-            <li class="step">
-                <div class="split">
-                    <div class="split-minor">
-                        <div class="step-time">
-                            <h3 class="step-time-start">{{ starttime }}</h3>
-                            <span class="step-time-meridian"></span>
-                        </div>
-                    </div>
-                    <div class="split-major">
-                        <div class="step-content">
-                            <div class="step-content-meta">
-                                <span class="meta-type">{{ type }}</span>
-                                <span class="meta-duration">{{ duration }}</span>
-                            </div>
-                            <div class="step-content-text">
-                                <p class="text-{{ type }}">{{ text }}</p>
-                            </div>
-=======
-            <div class="split">
-                <div class="split-minor">
-                    <div class="step-time">
-                        <h3 class="step-time-start"><%= step.startTime %></h3>
-                        <span class="step-time-meridian"></span>
-                    </div>
-                </div>
-                <div class="split-major">
-                    <div class="step-content">
-                        <div class="step-content-meta">
-                            <span class="meta-type"><%= type %></span>
-                            <span class="meta-duration"><%= step.get('duration').minutes %></span>
-                        </div>
-                        <div class="step-content-text">
-                            <p class="text-<% type %>"><%= step.get('text') %></p>
->>>>>>> backbone
-                        </div>
-                    </div>
+                    <button>Save Step</button>
                 </div>
             </div>
         </script>
@@ -277,56 +124,13 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
 
         <script>
-<<<<<<< HEAD
             (function() {
-
-                var routes = {
-                    ''              : 'Home',
-                    'plan/create'   : 'Plan@create',
-                    'plan/edit'     : 'Plan@edit',
-                    'step/create'   : 'Step@create',
+                window.log = function(log) {
+                    return console.log(log);
                 }
 
-                TinyPlanner = {};
-
-                window.addEventListener("load", function() {
-                    window.tinyrouter = tinyrouter(routes);
-                });
-
-            })();
-        </script>
-
-        <!-- Helpers -->
-        <script src="_assets/js/helpers.js"></script>
-        <script src="_assets/js/tinymvc.js"></script>
-
-        <!-- Models -->
-        <script src="_assets/js/models/Plan.js"></script>
-        <script src="_assets/js/models/Step.js"></script>
-
-        <!-- Controllers -->
-        <script src="_assets/js/controllers/HomeController.js"></script>
-        <script src="_assets/js/controllers/PlanController.js"></script>
-        <script src="_assets/js/controllers/StepController.js"></script>
-
-        <!-- Views -->
-        <script src="_assets/js/views/home.js"></script>
-        <script src="_assets/js/views/plan.js"></script>
-        <script src="_assets/js/views/step.js"></script>
-
-=======
-            window.log = function(log) {
-                return console.log(log);
-            }
-        </script>
-
-        <!-- Backbone -->
-        <script src="_assets/js/backbone/underscore.js"></script>
-        <script src="_assets/js/backbone/backbone.js"></script>
-        <script src="_assets/js/backbone/backbone.localStorage.js"></script>
-
-        <script>
-            (function() {
+                // during testing
+                // localStorage.clear();
 
                 var TinyPlanner = {
                     Models:         {},
@@ -337,28 +141,24 @@
                     router:         null
                 };
 
+                window.TinyPlanner = TinyPlanner;
+            })();
+        </script>
+
+        <!-- Backbone -->
+        <script src="_assets/js/hammer.min.js"></script>
+        <script src="_assets/build/js/production.js"></script>
+
+        <script>
+            (function() {
                 TinyPlanner.init = function () {
                     TinyPlanner.router = new TinyPlanner.Router();
 
                     Backbone.history.start();
                 };
 
-                window.TinyPlanner = TinyPlanner;
-
                 window.addEventListener("load", TinyPlanner.init, false);
             })();
         </script>
-
-        <!-- Models, Views & Routes -->
-        <script src="_assets/js/backbone/models/plan.js"></script>
-        <script src="_assets/js/backbone/models/step.js"></script>
-
-        <script src="_assets/js/backbone/views/index.js"></script>
-        <script src="_assets/js/backbone/views/plan.js"></script>
-
-        <script src="_assets/js/backbone/router.js"></script>
-
-        
->>>>>>> backbone
     </body>
 </html>

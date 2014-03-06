@@ -1,203 +1,171 @@
-/*
-    Plan
-*/
 
-var Plan = TinyMVC.Model.extend({
+(function() {
+    'use strict';
 
-    // Global vars
+    TinyPlanner.Models.Plan = Backbone.Model.extend({
 
-    // Set the name of the 'DB row'.
-    name:           'tp-plan',
+        localStorage: new Backbone.LocalStorage('tiny-plan'),
+       
+        defaults: function() {
+            return {
+                title:          '',
+                startTime:      (new Date()).getTime(),
+                endTime:        (new Date()).getTime(),
+                duration: {
+                    days:       0,
+                    hours:      0,
+                    minutes:    0
+                },
+            };
+        },
 
-    steps:          [],
-    startTime:      0,
-    endTime:        0,
-    duration: {
-        days:       0,
-        hours:      0,
-        minutes:    0
-    },
+        getSteps: function() {
 
-    //
-    addStep: function(step) {
-        
-        if( this.steps.constructor != Array )
-            this.steps = this.getSteps();
+            var self = this;
 
-        this.steps.push(step);
-        
-        this.updateDuration();
-        this.updateStartTime();
+            this.steps = new TinyPlanner.Collections.Steps();
+            this.steps.fetch();
 
-        this.save();
-    },
+            this.steps.forEach(function(step) {
+                if( step.get('plan_id') != self.id )
+                    self.steps.remove(step);
+            });
+        },
 
-    //
-    removeStep: function(idx) {
-        this.steps.splice(idx, 1);
-    },
+        removeStep: function(step) {
+            this.steps.remove(step);
+        },
 
-    //
-    getSteps: function() {
-        if( this.steps.constructor != Array ) {
-            var step_ids    = this.steps.split(','),
-                steps       = [];
+        updateDuration: function () {
+            var days,
+                hours,
+                minutes,
+                totalminutes = this.getDurationInMinutes();
 
-            for (var i = 0; i < step_ids.length; i++) {
-                if( step_ids[i] == '' ) {
-                    continue;
+            hours   = Math.floor(totalminutes / 60);
+            minutes = totalminutes - (hours * 60);
+            days    = Math.floor(hours / 24);
+            
+            if (days > 0) {
+                hours = hours - (days * 24);
+            }
+
+            this.set('duration', {
+                days:       days,
+                hours:      hours,
+                minutes:    minutes
+            });
+        },
+
+        updateStartTime: function () {
+
+            this.set('startTime', this.get('endTime') - ( this.getDurationInMinutes() * 60 * 1000 ) );
+
+            // Now update the step start times.
+            var st = this.get('startTime');
+
+            this.steps.each(function(step) {
+                step.setStartTime(st);
+
+                if( step.get('type') == 'on' ) {
+                    st = step.getEndTime();
                 }
+            });
+        },
 
-                var step = (new Step).find( step_ids[i] );
-                steps.push( step );
+        setEndTime: function (hours, minutes) {
+            hours   = hours     || 0;
+            minutes = minutes   || 0;
+
+            if (hours !== Math.round(hours)) {
+                minutes = minutes + ((hours - Math.floor(hours)) * 60);
+                hours   = Math.floor(hours);
+            }
+            if (minutes > 60) {
+                hours   = hours + Math.floor(minutes / 60);
+                minutes = minutes - (Math.floor(minutes / 60) * 60);
             }
 
-            this.steps = steps;
-        }
+            var current_date    = new Date();
+            var start_date      = new Date( current_date.getFullYear(), current_date.getMonth(), current_date.getDate(), hours, minutes, current_date.getSeconds() );
 
-        return this.steps;
-    },
+            this.set('endTime', start_date.valueOf());
+            this.set('startTime', this.endTime);
+        },
 
-    findAll: function() {
-        return this.records.map(function(id) {
-            var p = new Plan;
-            p.find(id);
+        getDurationInMinutes: function () {
+            var minutes     = 0,
+                step,
+                stepminutes = 0,
+                lasttally   = 0,
+                i;
 
-            return p;
-        }, this);
-    },
+            this.steps.each(function(step) {
 
-    toJSON: function() {
-        var step_ids = [];
+                stepminutes = step.getDurationInMinutes();
 
-        for (var i = 0; i < this.steps.length; i++) {
-            step_ids.push(this.steps[i].id);
-        }
-
-        return { title: this.title, startTime: this.startTime, endTime: this.endTime, steps: step_ids.join(',') }
-    },
-
-    updateDuration: function () {
-        var days,
-            hours,
-            minutes,
-            totalminutes = this.getDurationInMinutes();
-
-        hours   = Math.floor(totalminutes / 60);
-        minutes = totalminutes - (hours * 60);
-        days    = Math.floor(hours / 24);
-        
-        if (days > 0) {
-            hours = hours - (days * 24);
-        }
-
-        this.duration = {
-            days:       days,
-            hours:      hours,
-            minutes:    minutes
-        }
-    },
-
-    updateStartTime: function () {
-
-        this.startTime = this.endTime - ( this.getDurationInMinutes() * 60 * 1000 );
-
-        // Now update the step start times.
-        var st = this.startTime;
-
-        for (var i = 0; i < this.steps.length; i++) {
-            this.steps[i].setStartTime(st);
-
-            if( this.steps[i].type == 'then' ) {
-                st = this.steps[i].getEndTime();
-            }
-        }
-
-    },
-
-    setEndTime: function (hours, minutes) {
-        hours   = hours     || 0;
-        minutes = minutes   || 0;
-
-        if (hours !== Math.round(hours)) {
-            minutes = minutes + ((hours - Math.floor(hours)) * 60);
-            hours   = Math.floor(hours);
-        }
-        if (minutes > 60) {
-            hours   = hours + Math.floor(minutes / 60);
-            minutes = minutes - (Math.floor(minutes / 60) * 60);
-        }
-
-        var current_date    = new Date();
-        var start_date      = new Date( current_date.getFullYear(), current_date.getMonth(), current_date.getDate(), hours, minutes, current_date.getSeconds() );
-
-        this.endTime    = start_date.valueOf();
-        this.startTime  = this.endTime;
-    },
-
-    getDurationInMinutes: function () {
-        var minutes     = 0,
-            step,
-            stepminutes = 0,
-            lasttally   = 0,
-            i,
-            count       = this.steps.length;
-
-        for (i = 0; i < count; i = i + 1) {
-            step        = this.steps[i];
-            stepminutes = step.getDurationInMinutes();
-
-            if (step.type !== 'meanwhile') {
-                minutes     = minutes + stepminutes;
-                lasttally   = stepminutes;
-            } else {
-                if (stepminutes > lasttally) {
-                    minutes     = minutes + (stepminutes - lasttally);
+                if (step.type !== 'off') {
+                    minutes     = minutes + stepminutes;
                     lasttally   = stepminutes;
+                } else {
+                    if (stepminutes > lasttally) {
+                        minutes     = minutes + (stepminutes - lasttally);
+                        lasttally   = stepminutes;
+                    }
                 }
-            }
-        }
-        return minutes;
-    },
+            }, this)
 
-    getDurationInHours: function () {
-        return this.getDurationInMinutes() / 60;
-    },
+            return minutes;
+        },
 
-    getDurationInDays: function () {
-        return this.getDurationInHours() / 24;
-    },
+        getDurationInHours: function () {
+            return this.getDurationInMinutes() / 60;
+        },
 
-    getDurationInText: function () {
-        var text = '';
+        getDurationInDays: function () {
+            return this.getDurationInHours() / 24;
+        },
 
-        if (this.duration.days > 0) {
-            text = text + this.duration.days;
-            text = text + ' day';
-            if (this.duration.days > 1) {
-                text = text + 's';
+        getDurationInText: function () {
+            var text_array = [];
+
+            if (this.get('duration').days > 0) {
+                var text = this.get('duration').days + ' day' + (this.get('duration').days > 1 ? 's' : '');
+                text_array.push(text);
             }
+            if (this.get('duration').hours > 0) {
+                var text = this.get('duration').hours + 'h';
+                text_array.push(text);
+            }
+            if (this.get('duration').minutes > 0) {
+                var text = this.get('duration').minutes + 'm';
+                text_array.push(text);
+            }
+
+            return text_array.length ? text_array.join(' ') : 0;
+        },
+
+    });
+
+    // Collection
+
+    TinyPlanner.Collections.Plans = Backbone.Collection.extend({
+        
+        model: TinyPlanner.Models.Plan,
+
+        localStorage: new Backbone.LocalStorage('tiny-plan'),
+
+        nextOrder: function() {
+            if ( !this.length ) {
+                return 1;
+            }
+
+            return this.last().get('order') + 1;
+        },
+
+        comparator: function( plan ) {
+            return plan.get('order');
         }
-        if (this.duration.hours > 0) {
-            if (text !== '') {
-                text = text + ', ';
-            }
-            text = text + this.duration.hours;
-            text = text + ' hour';
-            if (this.duration.hours > 1) {
-                text = text + 's';
-            }
-        }
-        if (this.duration.minutes > 0) {
-            if (text !== '') {
-                text = text + ', ';
-            }
-            text = text + this.duration.minutes;
-            text = text + ' minute';
-            if (this.duration.minutes > 1) {
-                text = text + 's';
-            }
-        }
-        return text;
-    },
-});
+    });
+
+})();
