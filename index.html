@@ -103,6 +103,8 @@
         <script type="text/template" id="template-new-step">
             <div class="new-step">
                 <div class="inner">
+                    <div class="close"></div>
+
                     <input type="text" name="step-title">
 
                     <input type="text" name="step-duration" placeholder="duration">
@@ -117,11 +119,30 @@
             </div>
         </script>
 
+        <script type="text/template" id="template-plan-overview">
+            <div class="inner">
+                <div class="container">
+                    <div class="col plan-start">
+                        <span>Start</span>
+                        <span class="time"><%= plan.getStartTime() %></span>
+                    </div>
+                    <div class="col plan-end">
+                        <span>Finish</span>
+                        <span class="time"><%= plan.getEndTime() %></span>
+                    </div>
+
+                    <div class="duration">
+                        Duration <%= plan.getDurationInText() %>
+                    </div>
+                </div>
+            </div>
+        </script>
+
 
         <!--
             Scripts
         -->
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+        <script src="_assets/js/jquery-2.1.0.min.js"></script>
 
         <script>
             (function() {
@@ -136,6 +157,7 @@
                     Models:         {},
                     Collections:    {},
                     Views:          {},
+                    Plans:          null,
 
                     currentView:    null,
                     router:         null

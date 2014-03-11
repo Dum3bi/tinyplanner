@@ -2,46 +2,61 @@
 (function() {
     'use strict';
 
-    var StepList,
-        StepItem;
-
     TinyPlanner.Views.NewStep = Backbone.View.extend({
+
+        el: '.tiny-planner',
         
         template: _.template( $("#template-new-step").html() ),
 
         events: {
-            'keypress': 'createStep',
-            'click': 'createStep'
+            'keypress .new-step': 'createStep',
+            'click .new-step': 'createStep',
+            'click .close': 'close'
         },
 
         initialize: function () {
             this.$el.html( this.template() );
+
+            this.model.getSteps();
         },
 
         createStep: function() {
-            if ( event.which !== 13 || !$('[name=step-title]').val().trim() ) {
+            if (
+                    (event.type == 'keypress' && event.which !== 13)
+                || (event.type == 'click' && event.target.nodeName != 'BUTTON' )
+                || !this.$('[name=step-title]').val().trim()
+            ) {
                 return;
             }
 
             var step = new TinyPlanner.Models.Step({
-                plan_id:    this.model.id,
-                text:       $('[name=step-title]').val().trim(),
-                duration:   {
-                    days: 0,
-                    hours: 0,
-                    minutes: $('[name=step-duration]').val().trim()
-                }
-            });
+                    plan_id:    this.model.id,
+                    text:       $('[name=step-title]').val().trim(),
+                    duration:   {
+                        days: 0,
+                        hours: 0,
+                        minutes: $('[name=step-duration]').val().trim() == '' ? 0 : parseInt($('[name=step-duration]').val().trim())
+                    }
+                }),
+                plan = this.model;
 
             step.save();
 
-            this.model.steps.add(step);
+            this.collection.add(step);
 
-            $('[name=step-title]').val('');
-            $('[name=step-duration]').val('');
+            plan.updateDuration();
+            plan.updateStartTime();
 
-            TinyPlanner.router.navigate('plan/'+this.model.id, { trigger: true } );
+            plan.save();
+
+            TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: plan });
+            TinyPlanner.router.navigate('plan/'+plan.id );
         },
+
+        close: function() {
+            TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: this.model });
+            TinyPlanner.router.navigate('plan/'+plan.id );
+        }
 
     });
 

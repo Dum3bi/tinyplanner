@@ -3201,7 +3201,11 @@ return Backbone.LocalStorage;
 
         getSteps: function() {
 
+            if( this.steps )
+                return;
+            
             var self = this;
+
 
             this.steps = new TinyPlanner.Collections.Steps();
             this.steps.fetch();
@@ -3210,6 +3214,9 @@ return Backbone.LocalStorage;
                 if( step.get('plan_id') != self.id )
                     self.steps.remove(step);
             });
+
+            this.updateDuration();
+            this.updateStartTime();
         },
 
         removeStep: function(step) {
@@ -3245,12 +3252,22 @@ return Backbone.LocalStorage;
             var st = this.get('startTime');
 
             this.steps.each(function(step) {
-                step.setStartTime(st);
+                step.set('startTime', st);
 
                 if( step.get('type') == 'on' ) {
                     st = step.getEndTime();
                 }
             });
+        },
+
+        getStartTime: function() {
+            var time = new Date( this.get('startTime') );
+            return time.getHours() +'.'+ time.getMinutes();
+        },
+
+        getEndTime: function() {
+            var time = new Date( this.get('endTime') );
+            return time.getHours() +'.'+ time.getMinutes();
         },
 
         setEndTime: function (hours, minutes) {
@@ -3371,11 +3388,11 @@ return Backbone.LocalStorage;
         },
 
         setStartTime: function (timeStamp) {
-            this.startTime = timeStamp;
+            this.set('startTime', timeStamp);
         },
 
         getStartTimeInText: function() {
-            var d = new Date(this.startTime);
+            var d = new Date(this.get('startTime'));
 
             return d.getHours() + ':' + (parseInt(d.getMinutes()) < 10 ? '0'+d.getMinutes() : d.getMinutes())
         },
@@ -3383,7 +3400,7 @@ return Backbone.LocalStorage;
         getEndTime: function () {
             // convert duration to milliseconds
             var duration_ms = (this.get('duration').hours * 60 * 60 * 1000) + (this.get('duration').minutes * 60 * 1000),
-                endTime_ms  = this.startTime + duration_ms;
+                endTime_ms  = this.get('startTime') + duration_ms;
 
             return endTime_ms;
         },
@@ -3461,29 +3478,31 @@ return Backbone.LocalStorage;
 (function() {
     'use strict';
 
-    var PlanList,
-        PlanItem,
+    var PlanItem,
         AddPlan;
 
     TinyPlanner.Views.Index = Backbone.View.extend({
+
+        el: '.tiny-planner',
 
         template: _.template( $("#template-home").html() ),
 
         initialize: function() {
             this.$el.html( this.template() );
             
-            new PlanList({ el: '.plans', collection: this.collection }).render();
-
-            new AddPlan({ el: '.page' }).render();
+            new TinyPlanner.Views.PlanList().render();
+            new AddPlan().render();
         }
 
     });
 
 
-    PlanList = Backbone.View.extend({
+    TinyPlanner.Views.PlanList = Backbone.View.extend({
+
+        el: '.plans',
 
         initialize: function(options) {
-            this.listenTo(this.collection, 'add', this.renderPlan);
+            this.listenTo(TinyPlanner.Plans, 'add', this.renderPlan);
         },
 
         renderPlan: function(plan) {
@@ -3524,7 +3543,7 @@ return Backbone.LocalStorage;
         },
 
         render: function() {
-            this.collection.each(function(model) {
+            TinyPlanner.Plans.each(function(model) {
                 this.renderPlan(model);
             }, this);
 
@@ -3545,7 +3564,8 @@ return Backbone.LocalStorage;
         },
 
         loadPlan: function() {
-            TinyPlanner.router.navigate('plan/'+this.model.id, { trigger: true } );
+            TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: this.model });
+            TinyPlanner.router.navigate('plan/'+this.model.id);
         },
 
         deletePlan: function() {
@@ -3577,6 +3597,8 @@ return Backbone.LocalStorage;
 
     AddPlan = Backbone.View.extend({
 
+        el: '.page',
+
         template: _.template( $("#template-add-plan").html() ),
 
         events: {
@@ -3584,7 +3606,8 @@ return Backbone.LocalStorage;
         },
 
         newPlan: function() {
-            TinyPlanner.router.navigate('plan/new', { trigger: true } );
+            TinyPlanner.currentView = new TinyPlanner.Views.NewPlan();
+            TinyPlanner.router.navigate('plan/new');
         },
 
         render: function() {
@@ -3603,12 +3626,14 @@ return Backbone.LocalStorage;
         StepItem;
 
     TinyPlanner.Views.NewPlan = Backbone.View.extend({
+
+        el: '.tiny-planner',
         
         template: _.template( $("#template-new-plan").html() ),
 
         events: {
-            'keypress': 'createPlan',
-            'click': 'createPlan'
+            'keypress .new-plan': 'createPlan',
+            'click .new-plan': 'createPlan'
         },
 
         initialize: function () {
@@ -3616,7 +3641,11 @@ return Backbone.LocalStorage;
         },
 
         createPlan: function( event ) {
-            if ( event.which !== 13 || !this.$('[name=plan-name]').val().trim() ) {
+            if (
+                   (event.type == 'keypress' && event.which !== 13)
+                || (event.type == 'click' && event.target.nodeName != 'BUTTON' )
+                || !this.$('[name=plan-name]').val().trim()
+            ) {
                 return;
             }
 
@@ -3626,12 +3655,13 @@ return Backbone.LocalStorage;
 
             plan.save();
 
-            this.collection.add(plan);
+            TinyPlanner.Plans.add(plan);
 
             //
             this.$('[name=plan-name]').val('');
 
-            TinyPlanner.router.navigate('', { trigger: true } );
+            TinyPlanner.currentView = new TinyPlanner.Views.Index();
+            TinyPlanner.router.navigate('');
         },
 
     });
@@ -3641,46 +3671,61 @@ return Backbone.LocalStorage;
 (function() {
     'use strict';
 
-    var StepList,
-        StepItem;
-
     TinyPlanner.Views.NewStep = Backbone.View.extend({
+
+        el: '.tiny-planner',
         
         template: _.template( $("#template-new-step").html() ),
 
         events: {
-            'keypress': 'createStep',
-            'click': 'createStep'
+            'keypress .new-step': 'createStep',
+            'click .new-step': 'createStep',
+            'click .close': 'close'
         },
 
         initialize: function () {
             this.$el.html( this.template() );
+
+            this.model.getSteps();
         },
 
         createStep: function() {
-            if ( event.which !== 13 || !$('[name=step-title]').val().trim() ) {
+            if (
+                    (event.type == 'keypress' && event.which !== 13)
+                || (event.type == 'click' && event.target.nodeName != 'BUTTON' )
+                || !this.$('[name=step-title]').val().trim()
+            ) {
                 return;
             }
 
             var step = new TinyPlanner.Models.Step({
-                plan_id:    this.model.id,
-                text:       $('[name=step-title]').val().trim(),
-                duration:   {
-                    days: 0,
-                    hours: 0,
-                    minutes: $('[name=step-duration]').val().trim()
-                }
-            });
+                    plan_id:    this.model.id,
+                    text:       $('[name=step-title]').val().trim(),
+                    duration:   {
+                        days: 0,
+                        hours: 0,
+                        minutes: $('[name=step-duration]').val().trim() == '' ? 0 : parseInt($('[name=step-duration]').val().trim())
+                    }
+                }),
+                plan = this.model;
 
             step.save();
 
-            this.model.steps.add(step);
+            this.collection.add(step);
 
-            $('[name=step-title]').val('');
-            $('[name=step-duration]').val('');
+            plan.updateDuration();
+            plan.updateStartTime();
 
-            TinyPlanner.router.navigate('plan/'+this.model.id, { trigger: true } );
+            plan.save();
+
+            TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: plan });
+            TinyPlanner.router.navigate('plan/'+plan.id );
         },
+
+        close: function() {
+            TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: this.model });
+            TinyPlanner.router.navigate('plan/'+plan.id );
+        }
 
     });
 
@@ -3689,11 +3734,13 @@ return Backbone.LocalStorage;
 (function() {
     'use strict';
 
-    var StepList,
-        StepItem,
-        AddStep;
+    var StepItem,
+        AddStep,
+        PlanOverview;
 
     TinyPlanner.Views.Plan = Backbone.View.extend({
+
+        el: '.tiny-planner',
         
         template: _.template( $("#template-view-plan").html() ),
 
@@ -3704,18 +3751,23 @@ return Backbone.LocalStorage;
         initialize: function() {
             this.$el.html( this.template({ plan: this.model }) );
 
-            new StepList({ el: '.plan-steps', model: this.model, collection: this.model.steps }).render();
+            this.model.getSteps();
 
-            new AddStep({ el: '.page', model: this.model }).render();
+            new TinyPlanner.Views.StepList({ model: this.model, collection: this.model.steps }).render();
+            new AddStep({ model: this.model, collection: this.model.steps }).render();
+            this.$el.append(new PlanOverview({ model: this.model }).render().el);
         },
 
         goBack: function() {
-            TinyPlanner.router.navigate('', { trigger: true } );
+            TinyPlanner.currentView = new TinyPlanner.Views.Index();
+            TinyPlanner.router.navigate('');
         }
     });
 
 
-    StepList = Backbone.View.extend({
+    TinyPlanner.Views.StepList = Backbone.View.extend({
+
+        el: '.plan-steps',
 
         initialize: function(options) {
             this.listenTo(this.collection, 'add', this.renderStep);
@@ -3782,13 +3834,19 @@ return Backbone.LocalStorage;
                 $step   = $(this.el),
                 plan    = new TinyPlanner.Models.Plan();
 
-            log(this)
-
             plan.id = this.model.get('plan_id');
             plan.fetch();
             plan.getSteps();
 
-            $step.css('overflow', 'hidden').animate({ height: 0}, 500, function() {
+            var height = $step.outerHeight();
+            $step.css('height', height+'px' );
+            $step.addClass('deleting');
+            
+            setTimeout(function() {
+                $step.css('height', 0);
+            }, 20);
+            
+            setTimeout(function() {
                 $step.remove();
 
                 // remove the step from the plan
@@ -3796,7 +3854,7 @@ return Backbone.LocalStorage;
 
                 // remove the step
                 self.model.destroy();
-            });
+            }, 320);
         },
 
         render: function() {
@@ -3809,6 +3867,8 @@ return Backbone.LocalStorage;
 
     AddStep = Backbone.View.extend({
 
+        el: '.page',
+
         template: _.template( $("#template-add-step").html() ),
 
         events: {
@@ -3816,11 +3876,29 @@ return Backbone.LocalStorage;
         },
 
         newStep: function() {
-            TinyPlanner.router.navigate('step/new/'+this.model.id, { trigger: true } );
+            TinyPlanner.currentView = new TinyPlanner.Views.NewStep({ model: this.model, collection: this.collection });
         },
 
         render: function() {
             this.$el.append( this.template() );
+
+            return this;
+        }
+    });
+
+
+    PlanOverview = Backbone.View.extend({
+
+        className: 'plan-overview',
+
+        template: _.template( $("#template-plan-overview").html() ),
+
+        initialize: function() {
+            this.listenTo(this.model, 'change', this.render);
+        },
+
+        render: function() {
+            this.$el.html( this.template({ plan: this.model }) );
 
             return this;
         }
@@ -3840,62 +3918,45 @@ return Backbone.LocalStorage;
             'step/new/:id'  : 'newStep'
         },
 
-        index: function(about) {
-            var plans = new TinyPlanner.Collections.Plans();
+        index: function() {
+            TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
 
-            plans
-                .fetch()
-                .then(function() {
-                    TinyPlanner.currentView = new TinyPlanner.Views.Index({ el: '.tiny-planner', collection: plans });
-                });
+            TinyPlanner.Plans.fetch().then(function() {
+                TinyPlanner.currentView = new TinyPlanner.Views.Index();
+            });
         },
 
         newPlan: function() {
-            var plans = new TinyPlanner.Collections.Plans();
+            TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
 
-            TinyPlanner.currentView = new TinyPlanner.Views.NewPlan({ el: '.tiny-planner', collection: plans });
+            TinyPlanner.Plans.fetch().then(function() {
+                TinyPlanner.currentView = new TinyPlanner.Views.NewPlan();
+            });
+
         },
 
         viewPlan: function(id) {
+            TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
             var plan = new TinyPlanner.Models.Plan();
 
             if(id) {
                 plan.id = id;
-                plan
-                    .fetch()
-                    .then(function() {
-                        
-                        // update the plan details
-                        plan.getSteps();
-                        plan.updateDuration();
-                        plan.updateStartTime();
-
-                        plan.save();
-
-                        TinyPlanner.currentView = new TinyPlanner.Views.Plan({ el: '.tiny-planner', model: plan });
-                    });
+                plan.fetch().then(function() {
+                    TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: plan });
+                });
                 
             }
         },
 
         newStep: function(id) {
+            TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
             var plan = new TinyPlanner.Models.Plan();
 
             if(id) {
                 plan.id = id;
-                plan
-                    .fetch()
-                    .then(function() {
-                        
-                        // update the plan details
-                        plan.getSteps();
-                        plan.updateDuration();
-                        plan.updateStartTime();
-
-                        plan.save();
-
-                        TinyPlanner.currentView = new TinyPlanner.Views.NewStep({ el: '.tiny-planner', model: plan });
-                    });
+                plan.fetch().then(function() {
+                    TinyPlanner.currentView = new TinyPlanner.Views.NewStep({ model: plan });
+                });
             }
         }
     });

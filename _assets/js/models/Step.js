@@ -20,11 +20,11 @@
         },
 
         setStartTime: function (timeStamp) {
-            this.startTime = timeStamp;
+            this.set('startTime', timeStamp);
         },
 
         getStartTimeInText: function() {
-            var d = new Date(this.startTime);
+            var d = new Date(this.get('startTime'));
 
             return d.getHours() + ':' + (parseInt(d.getMinutes()) < 10 ? '0'+d.getMinutes() : d.getMinutes())
         },
@@ -32,7 +32,7 @@
         getEndTime: function () {
             // convert duration to milliseconds
             var duration_ms = (this.get('duration').hours * 60 * 60 * 1000) + (this.get('duration').minutes * 60 * 1000),
-                endTime_ms  = this.startTime + duration_ms;
+                endTime_ms  = this.get('startTime') + duration_ms;
 
             return endTime_ms;
         },

@@ -2,11 +2,13 @@
 (function() {
     'use strict';
 
-    var StepList,
-        StepItem,
-        AddStep;
+    var StepItem,
+        AddStep,
+        PlanOverview;
 
     TinyPlanner.Views.Plan = Backbone.View.extend({
+
+        el: '.tiny-planner',
         
         template: _.template( $("#template-view-plan").html() ),
 
@@ -17,18 +19,23 @@
         initialize: function() {
             this.$el.html( this.template({ plan: this.model }) );
 
-            new StepList({ el: '.plan-steps', model: this.model, collection: this.model.steps }).render();
+            this.model.getSteps();
 
-            new AddStep({ el: '.page', model: this.model }).render();
+            new TinyPlanner.Views.StepList({ model: this.model, collection: this.model.steps }).render();
+            new AddStep({ model: this.model, collection: this.model.steps }).render();
+            this.$el.append(new PlanOverview({ model: this.model }).render().el);
         },
 
         goBack: function() {
-            TinyPlanner.router.navigate('', { trigger: true } );
+            TinyPlanner.currentView = new TinyPlanner.Views.Index();
+            TinyPlanner.router.navigate('');
         }
     });
 
 
-    StepList = Backbone.View.extend({
+    TinyPlanner.Views.StepList = Backbone.View.extend({
+
+        el: '.plan-steps',
 
         initialize: function(options) {
             this.listenTo(this.collection, 'add', this.renderStep);
@@ -95,13 +102,19 @@
                 $step   = $(this.el),
                 plan    = new TinyPlanner.Models.Plan();
 
-            log(this)
-
             plan.id = this.model.get('plan_id');
             plan.fetch();
             plan.getSteps();
 
-            $step.css('overflow', 'hidden').animate({ height: 0}, 500, function() {
+            var height = $step.outerHeight();
+            $step.css('height', height+'px' );
+            $step.addClass('deleting');
+            
+            setTimeout(function() {
+                $step.css('height', 0);
+            }, 20);
+            
+            setTimeout(function() {
                 $step.remove();
 
                 // remove the step from the plan
@@ -109,7 +122,7 @@
 
                 // remove the step
                 self.model.destroy();
-            });
+            }, 320);
         },
 
         render: function() {
@@ -122,6 +135,8 @@
 
     AddStep = Backbone.View.extend({
 
+        el: '.page',
+
         template: _.template( $("#template-add-step").html() ),
 
         events: {
@@ -129,11 +144,29 @@
         },
 
         newStep: function() {
-            TinyPlanner.router.navigate('step/new/'+this.model.id, { trigger: true } );
+            TinyPlanner.currentView = new TinyPlanner.Views.NewStep({ model: this.model, collection: this.collection });
         },
 
         render: function() {
             this.$el.append( this.template() );
+
+            return this;
+        }
+    });
+
+
+    PlanOverview = Backbone.View.extend({
+
+        className: 'plan-overview',
+
+        template: _.template( $("#template-plan-overview").html() ),
+
+        initialize: function() {
+            this.listenTo(this.model, 'change', this.render);
+        },
+
+        render: function() {
+            this.$el.html( this.template({ plan: this.model }) );
 
             return this;
         }

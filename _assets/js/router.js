@@ -11,62 +11,45 @@
             'step/new/:id'  : 'newStep'
         },
 
-        index: function(about) {
-            var plans = new TinyPlanner.Collections.Plans();
+        index: function() {
+            TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
 
-            plans
-                .fetch()
-                .then(function() {
-                    TinyPlanner.currentView = new TinyPlanner.Views.Index({ el: '.tiny-planner', collection: plans });
-                });
+            TinyPlanner.Plans.fetch().then(function() {
+                TinyPlanner.currentView = new TinyPlanner.Views.Index();
+            });
         },
 
         newPlan: function() {
-            var plans = new TinyPlanner.Collections.Plans();
+            TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
 
-            TinyPlanner.currentView = new TinyPlanner.Views.NewPlan({ el: '.tiny-planner', collection: plans });
+            TinyPlanner.Plans.fetch().then(function() {
+                TinyPlanner.currentView = new TinyPlanner.Views.NewPlan();
+            });
+
         },
 
         viewPlan: function(id) {
+            TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
             var plan = new TinyPlanner.Models.Plan();
 
             if(id) {
                 plan.id = id;
-                plan
-                    .fetch()
-                    .then(function() {
-                        
-                        // update the plan details
-                        plan.getSteps();
-                        plan.updateDuration();
-                        plan.updateStartTime();
-
-                        plan.save();
-
-                        TinyPlanner.currentView = new TinyPlanner.Views.Plan({ el: '.tiny-planner', model: plan });
-                    });
+                plan.fetch().then(function() {
+                    TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: plan });
+                });
                 
             }
         },
 
         newStep: function(id) {
+            TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
             var plan = new TinyPlanner.Models.Plan();
 
             if(id) {
                 plan.id = id;
-                plan
-                    .fetch()
-                    .then(function() {
-                        
-                        // update the plan details
-                        plan.getSteps();
-                        plan.updateDuration();
-                        plan.updateStartTime();
-
-                        plan.save();
-
-                        TinyPlanner.currentView = new TinyPlanner.Views.NewStep({ el: '.tiny-planner', model: plan });
-                    });
+                plan.fetch().then(function() {
+                    TinyPlanner.currentView = new TinyPlanner.Views.NewStep({ model: plan });
+                });
             }
         }
     });

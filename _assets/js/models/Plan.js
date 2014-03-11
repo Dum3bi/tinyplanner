@@ -21,7 +21,11 @@
 
         getSteps: function() {
 
+            if( this.steps )
+                return;
+            
             var self = this;
+
 
             this.steps = new TinyPlanner.Collections.Steps();
             this.steps.fetch();
@@ -30,6 +34,9 @@
                 if( step.get('plan_id') != self.id )
                     self.steps.remove(step);
             });
+
+            this.updateDuration();
+            this.updateStartTime();
         },
 
         removeStep: function(step) {
@@ -65,12 +72,22 @@
             var st = this.get('startTime');
 
             this.steps.each(function(step) {
-                step.setStartTime(st);
+                step.set('startTime', st);
 
                 if( step.get('type') == 'on' ) {
                     st = step.getEndTime();
                 }
             });
+        },
+
+        getStartTime: function() {
+            var time = new Date( this.get('startTime') );
+            return time.getHours() +'.'+ time.getMinutes();
+        },
+
+        getEndTime: function() {
+            var time = new Date( this.get('endTime') );
+            return time.getHours() +'.'+ time.getMinutes();
         },
 
         setEndTime: function (hours, minutes) {

@@ -6,12 +6,14 @@
         StepItem;
 
     TinyPlanner.Views.NewPlan = Backbone.View.extend({
+
+        el: '.tiny-planner',
         
         template: _.template( $("#template-new-plan").html() ),
 
         events: {
-            'keypress': 'createPlan',
-            'click': 'createPlan'
+            'keypress .new-plan': 'createPlan',
+            'click .new-plan': 'createPlan'
         },
 
         initialize: function () {
@@ -19,7 +21,11 @@
         },
 
         createPlan: function( event ) {
-            if ( event.which !== 13 || !this.$('[name=plan-name]').val().trim() ) {
+            if (
+                   (event.type == 'keypress' && event.which !== 13)
+                || (event.type == 'click' && event.target.nodeName != 'BUTTON' )
+                || !this.$('[name=plan-name]').val().trim()
+            ) {
                 return;
             }
 
@@ -29,12 +35,13 @@
 
             plan.save();
 
-            this.collection.add(plan);
+            TinyPlanner.Plans.add(plan);
 
             //
             this.$('[name=plan-name]').val('');
 
-            TinyPlanner.router.navigate('', { trigger: true } );
+            TinyPlanner.currentView = new TinyPlanner.Views.Index();
+            TinyPlanner.router.navigate('');
         },
 
     });

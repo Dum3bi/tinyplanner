@@ -5,7 +5,7 @@ $white:     #fff;
 $green:     #53d76a;
 $grey:      #d3d3d3;
 
-
+/* Mixins */
 %clearfix {
   &:after {
     content: "";
@@ -80,11 +80,21 @@ ul, ol, li {
 .buttons {
     .delete {
         float: right;
-        background: rgb(243,99,92) url('/_assets/img/trash.svg') 50% 50% no-repeat;
+        background: rgb(243,99,92) url('../../img/trash.svg') 50% 50% no-repeat;
         background-size: 25%;
         width:  80px;
         height: 80px;
     }
+}
+
+.close {
+    position: absolute;
+    top:    15px;
+    right:  15px;
+    background: url('../../img/cross.svg') 50% 50% no-repeat;
+    background-size: 60%;
+    width:  30px;
+    height: 30px;
 }
 
 .cover-panel {
@@ -104,7 +114,7 @@ ul, ol, li {
     cursor: default;
 
     .cover-panel {
-        background: #fff url('/_assets/img/orange-arrow.svg') 95% 50% no-repeat;
+        background: #fff url('../../img/orange-arrow.svg') 95% 50% no-repeat;
         background-size: 15px;
     }
 
@@ -150,7 +160,7 @@ ul, ol, li {
     position: absolute;
     font-size: 26px;
     color: rgb(147,147,147);
-    background: url('/_assets/img/plus.svg') 50% 0 no-repeat;
+    background: url('../../img/plus.svg') 50% 0 no-repeat;
     background-size: 47px;
     text-align: center;
     width: 100%;
@@ -162,7 +172,7 @@ ul, ol, li {
 .add-step {
     font-size: 26px;
     color: rgb(147,147,147);
-    background: url('/_assets/img/plus.svg') 50% 0 no-repeat;
+    background: url('../../img/plus.svg') 50% 0 no-repeat;
     background-size: 47px;
     text-align: center;
     margin-top: 120px;
@@ -225,7 +235,7 @@ ul, ol, li {
 
         .back {
             position: absolute;
-            background: url('/_assets/img/white-arrow.svg') 50% 50% no-repeat;
+            background: url('../../img/white-arrow.svg') 50% 50% no-repeat;
             background-size: 15px;
             color: rgba(255,255,255,0.7);
             margin-left: -60px;
@@ -240,7 +250,7 @@ ul, ol, li {
 }
 
 .new-step {
-    padding-top: 50px;
+    padding-top: 70px;
 
     input[type="text"] {
         display: block;
@@ -249,7 +259,7 @@ ul, ol, li {
         font-size: 20px;
         border: none;
         background-color: #fff;
-        border-bottom: 1px solid rgba(0,0,0,0.5);
+        border-bottom: 1px solid #D5D3D7;
         text-align: center;
         width: 100%;
         margin-bottom: 30px;
@@ -342,9 +352,52 @@ ul, ol, li {
     }
 }
 
+.plan-overview {
+    position: absolute;
+    bottom: 0;
+    color: #fff;
+    background-color: $orange;
+    width: 100%;
+
+    .container {
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    .col {
+        float: left;
+        width: 50%;
+    }
+
+    .col span:first-child {
+        color: rgb(255,198,184);
+    }
+
+    .time {
+        display: block;
+        font-size: 44px;
+    }
+
+    .duration {
+        clear: both;
+        padding-top: 15px;
+    }
+}
+
+
+/** Effects **/
+
 .animate {
     -webkit-transition: all .3s ease;
        -moz-transition: all .3s ease;
             transition: all .3s ease;
+}
+
+.deleting {
+    overflow: hidden;
+
+    -webkit-transition: height .3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+       -moz-transition: height .3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: height .3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 

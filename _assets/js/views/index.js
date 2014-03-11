@@ -2,29 +2,31 @@
 (function() {
     'use strict';
 
-    var PlanList,
-        PlanItem,
+    var PlanItem,
         AddPlan;
 
     TinyPlanner.Views.Index = Backbone.View.extend({
+
+        el: '.tiny-planner',
 
         template: _.template( $("#template-home").html() ),
 
         initialize: function() {
             this.$el.html( this.template() );
             
-            new PlanList({ el: '.plans', collection: this.collection }).render();
-
-            new AddPlan({ el: '.page' }).render();
+            new TinyPlanner.Views.PlanList().render();
+            new AddPlan().render();
         }
 
     });
 
 
-    PlanList = Backbone.View.extend({
+    TinyPlanner.Views.PlanList = Backbone.View.extend({
+
+        el: '.plans',
 
         initialize: function(options) {
-            this.listenTo(this.collection, 'add', this.renderPlan);
+            this.listenTo(TinyPlanner.Plans, 'add', this.renderPlan);
         },
 
         renderPlan: function(plan) {
@@ -65,7 +67,7 @@
         },
 
         render: function() {
-            this.collection.each(function(model) {
+            TinyPlanner.Plans.each(function(model) {
                 this.renderPlan(model);
             }, this);
 
@@ -86,7 +88,8 @@
         },
 
         loadPlan: function() {
-            TinyPlanner.router.navigate('plan/'+this.model.id, { trigger: true } );
+            TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: this.model });
+            TinyPlanner.router.navigate('plan/'+this.model.id);
         },
 
         deletePlan: function() {
@@ -118,6 +121,8 @@
 
     AddPlan = Backbone.View.extend({
 
+        el: '.page',
+
         template: _.template( $("#template-add-plan").html() ),
 
         events: {
@@ -125,7 +130,8 @@
         },
 
         newPlan: function() {
-            TinyPlanner.router.navigate('plan/new', { trigger: true } );
+            TinyPlanner.currentView = new TinyPlanner.Views.NewPlan();
+            TinyPlanner.router.navigate('plan/new');
         },
 
         render: function() {
