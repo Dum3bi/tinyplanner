@@ -3,7 +3,8 @@
     'use strict';
 
     var PlanItem,
-        AddPlan;
+        AddPlan,
+        NewPlan;
 
     TinyPlanner.Views.Index = Backbone.View.extend({
 
@@ -96,7 +97,9 @@
             var self    = this,
                 $plan   = $(this.el);
 
-            $plan.css('overflow', 'hidden').animate({ height: 0}, 500, function() {
+            $plan.addClass('deleting');
+            
+            setTimeout(function() {
                 $plan.remove();
 
                 self.model.getSteps();
@@ -108,7 +111,7 @@
 
                 // remove the plan
                 self.model.destroy();
-            });
+            }, 600);
         },
 
         render: function() {
@@ -130,8 +133,7 @@
         },
 
         newPlan: function() {
-            TinyPlanner.currentView = new TinyPlanner.Views.NewPlan();
-            TinyPlanner.router.navigate('plan/new');
+            TinyPlanner.currentView = new NewPlan();
         },
 
         render: function() {
@@ -139,6 +141,47 @@
 
             return this;
         }
+    });
+
+
+    NewPlan = Backbone.View.extend({
+
+        el: '.tiny-planner',
+
+        className: 'panel',
+        
+        template: _.template( $("#template-new-plan").html() ),
+
+        events: {
+            'keypress .new-plan': 'createPlan',
+            'click .new-plan': 'createPlan'
+        },
+
+        initialize: function () {
+            this.$el.html( this.template() );
+            this.$('[name="plan-name"]').focus();
+        },
+
+        createPlan: function( event ) {
+            if (
+                   (event.type == 'keypress' && event.which !== 13)
+                || (event.type == 'click' && event.target.nodeName != 'BUTTON' )
+                || !this.$('[name=plan-name]').val().trim()
+            ) {
+                return;
+            }
+
+            var plan = new TinyPlanner.Models.Plan({
+                title: this.$('[name=plan-name]').val().trim()
+            });
+
+            plan.save();
+
+            TinyPlanner.Plans.add(plan);
+
+            new TinyPlanner.Views.Index();
+        },
+
     });
 
 })();

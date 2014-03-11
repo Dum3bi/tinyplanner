@@ -16,6 +16,7 @@
 
         initialize: function () {
             this.$el.html( this.template() );
+            this.$('[name="step-title"]').focus();
 
             this.model.getSteps();
         },
@@ -55,7 +56,7 @@
 
         close: function() {
             TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: this.model });
-            TinyPlanner.router.navigate('plan/'+plan.id );
+            // TinyPlanner.router.navigate('plan/'+plan.id );
         }
 
     });

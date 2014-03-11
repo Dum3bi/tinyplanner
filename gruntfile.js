@@ -8,23 +8,23 @@ module.exports = function(grunt) {
             // 2. Configuration for concatenating files goes here.
             dist: {
                 src: [
-                    '_assets/js/underscore.js',
-                    '_assets/js/backbone.js',
-                    '_assets/js/backbone.localStorage.js',
+                    'resources/js/underscore.js',
+                    'resources/js/backbone.js',
+                    'resources/js/backbone.localStorage.js',
 
-                    '_assets/js/models/*',
-                    '_assets/js/views/*',
+                    'resources/js/models/*',
+                    'resources/js/views/*',
 
-                    '_assets/js/router.js',
+                    'resources/js/router.js',
                 ],
-                dest: '_assets/build/js/production.js',
+                dest: 'resources/build/js/production.js',
             }
         },
 
         uglify: {
             build: {
-                src:    '_assets/build/js/production.js',
-                dest:   '_assets/build/js/production.min.js'
+                src:    'resources/build/js/production.js',
+                dest:   'resources/build/js/production.min.js'
             }
         },
 
@@ -34,7 +34,7 @@ module.exports = function(grunt) {
                     style: 'compressed'
                 },
                 files: {
-                    '_assets/build/css/global.css': '_assets/css/global.scss'
+                    'resources/build/css/global.css': 'resources/css/global.scss'
                 }
             } 
         },
@@ -44,11 +44,11 @@ module.exports = function(grunt) {
                 livereload: true,
             },
             css: {
-                files: ['_assets/css/*.scss'],
+                files: ['resources/css/*.scss'],
                 tasks: ['css']
             },
             js: {
-                files: ['_assets/js/**/*.js'],
+                files: ['resources/js/**/*.js'],
                 tasks: ['js'],
                 options: {
                     spawn: false,

@@ -41,6 +41,11 @@
 
         removeStep: function(step) {
             this.steps.remove(step);
+
+            this.updateDuration();
+            this.updateStartTime();
+
+            this.save();
         },
 
         updateDuration: function () {
@@ -82,12 +87,12 @@
 
         getStartTime: function() {
             var time = new Date( this.get('startTime') );
-            return time.getHours() +'.'+ time.getMinutes();
+            return (time.getHours() < 10 ? '0' + time.getHours() : time.getHours()) +'.'+ (time.getMinutes() < 10 ? '0' + time.getMinutes() : time.getMinutes());
         },
 
         getEndTime: function() {
             var time = new Date( this.get('endTime') );
-            return time.getHours() +'.'+ time.getMinutes();
+            return (time.getHours() < 10 ? '0' + time.getHours() : time.getHours()) +'.'+ (time.getMinutes() < 10 ? '0' + time.getMinutes() : time.getMinutes());
         },
 
         setEndTime: function (hours, minutes) {

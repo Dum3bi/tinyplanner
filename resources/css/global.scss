@@ -19,6 +19,9 @@ html, body, div, h1, h2, h3, h4, p, code, pre, strong, em, b, i, ul, ol, li, sec
 
 
 *, *:before, *:after {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent; /* For some Androids */
+
     -webkit-box-sizing: border-box;
             box-sizing: border-box;
 }
@@ -61,11 +64,16 @@ ul, ol, li {
   height: 100%;
 }
 
+.tiny-planner {
+    position: relative;
+    overflow: hidden;
+}
+
 .page {
     background-color: #F5F5F5;
 }
 
-.page.orange {
+.orange {
   background-color: $orange;
 }
 
@@ -112,6 +120,9 @@ ul, ol, li {
     background-color: #F5F5F5;
     border-bottom: 1px solid rgb(213,211,215);
     cursor: default;
+    height: 91px;
+
+    -webkit-transition: height .6s cubic-bezier(0.23, 1, 0.32, 1);
 
     .cover-panel {
         background: #fff url('../../img/orange-arrow.svg') 95% 50% no-repeat;
@@ -141,6 +152,9 @@ ul, ol, li {
     background-color: #F5F5F5;
     border-bottom: 1px solid #ccc;
     cursor: default;
+    height: 81px;
+
+    -webkit-transition: height .6s cubic-bezier(0.23, 1, 0.32, 1);
 
     .step-text {
         display: inline;
@@ -229,22 +243,27 @@ ul, ol, li {
 
 .view-plan {
     .plan-header {
-        padding: 18px 0 18px 60px;
+        padding: 18px 0;
         background-color: $orange;
         color: #fff;
 
         .back {
             position: absolute;
             background: url('../../img/white-arrow.svg') 50% 50% no-repeat;
-            background-size: 15px;
-            color: rgba(255,255,255,0.7);
-            margin-left: -60px;
-            width: 21px;
-            height: 36px;
+            background-size: 45%;
+            width: 32px;
+            height: 32px;
         }
 
         .plan-title {
-            font-size: 26px;
+            font-size: 24px;
+            text-align: center;
+            max-width: 220px;
+            margin: 0 auto;
+
+            span {
+                border-bottom: 1px dashed rgba(255,255,255,0.4);
+            }
         }
     }
 }
@@ -359,6 +378,9 @@ ul, ol, li {
     background-color: $orange;
     width: 100%;
 
+    -webkit-transform: translate3d(0, 155px, 0);
+    -webkit-transition: -webkit-transform .5s ease;
+
     .container {
         padding: 20px 0;
         text-align: center;
@@ -395,9 +417,6 @@ ul, ol, li {
 
 .deleting {
     overflow: hidden;
-
-    -webkit-transition: height .3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-       -moz-transition: height .3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            transition: height .3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    height: 0;
 }
 

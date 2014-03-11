@@ -6,7 +6,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <title>TinyPlanner &#183; Work out when you need to start something</title>
 
-        <link rel="stylesheet" href="_assets/build/css/global.css">
+        <link rel="stylesheet" href="resources/build/css/global.css">
 
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
         <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
@@ -92,7 +92,7 @@
                 <div class="plan-header">
                     <div class="inner">
                         <span class="back"></span>
-                        <div class="plan-title"><%= plan.get('title') %></div>
+                        <div class="plan-title"><span><%= plan.get('title') %></span></div>
                     </div>
                 </div>
 
@@ -142,7 +142,7 @@
         <!--
             Scripts
         -->
-        <script src="_assets/js/jquery-2.1.0.min.js"></script>
+        <script src="resources/js/jquery-2.1.0.min.js"></script>
 
         <script>
             (function() {
@@ -168,8 +168,8 @@
         </script>
 
         <!-- Backbone -->
-        <script src="_assets/js/hammer.min.js"></script>
-        <script src="_assets/build/js/production.js"></script>
+        <script src="resources/js/hammer.min.js"></script>
+        <script src="resources/build/js/production.js"></script>
 
         <script>
             (function() {

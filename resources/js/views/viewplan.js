@@ -23,7 +23,13 @@
 
             new TinyPlanner.Views.StepList({ model: this.model, collection: this.model.steps }).render();
             new AddStep({ model: this.model, collection: this.model.steps }).render();
-            this.$el.append(new PlanOverview({ model: this.model }).render().el);
+            
+            var overview = new PlanOverview({ model: this.model });
+            this.$el.append(overview.render().el);
+
+            setTimeout(function() {
+                overview.$el.css('-webkit-transform', 'translate3d(0,0,0)');
+            }, 500);
         },
 
         goBack: function() {
@@ -106,13 +112,7 @@
             plan.fetch();
             plan.getSteps();
 
-            var height = $step.outerHeight();
-            $step.css('height', height+'px' );
             $step.addClass('deleting');
-            
-            setTimeout(function() {
-                $step.css('height', 0);
-            }, 20);
             
             setTimeout(function() {
                 $step.remove();
@@ -122,7 +122,7 @@
 
                 // remove the step
                 self.model.destroy();
-            }, 320);
+            }, 600);
         },
 
         render: function() {

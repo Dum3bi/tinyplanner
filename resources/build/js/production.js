@@ -3221,6 +3221,11 @@ return Backbone.LocalStorage;
 
         removeStep: function(step) {
             this.steps.remove(step);
+
+            this.updateDuration();
+            this.updateStartTime();
+
+            this.save();
         },
 
         updateDuration: function () {
@@ -3262,12 +3267,12 @@ return Backbone.LocalStorage;
 
         getStartTime: function() {
             var time = new Date( this.get('startTime') );
-            return time.getHours() +'.'+ time.getMinutes();
+            return (time.getHours() < 10 ? '0' + time.getHours() : time.getHours()) +'.'+ (time.getMinutes() < 10 ? '0' + time.getMinutes() : time.getMinutes());
         },
 
         getEndTime: function() {
             var time = new Date( this.get('endTime') );
-            return time.getHours() +'.'+ time.getMinutes();
+            return (time.getHours() < 10 ? '0' + time.getHours() : time.getHours()) +'.'+ (time.getMinutes() < 10 ? '0' + time.getMinutes() : time.getMinutes());
         },
 
         setEndTime: function (hours, minutes) {
@@ -3479,7 +3484,8 @@ return Backbone.LocalStorage;
     'use strict';
 
     var PlanItem,
-        AddPlan;
+        AddPlan,
+        NewPlan;
 
     TinyPlanner.Views.Index = Backbone.View.extend({
 
@@ -3572,7 +3578,9 @@ return Backbone.LocalStorage;
             var self    = this,
                 $plan   = $(this.el);
 
-            $plan.css('overflow', 'hidden').animate({ height: 0}, 500, function() {
+            $plan.addClass('deleting');
+            
+            setTimeout(function() {
                 $plan.remove();
 
                 self.model.getSteps();
@@ -3584,7 +3592,7 @@ return Backbone.LocalStorage;
 
                 // remove the plan
                 self.model.destroy();
-            });
+            }, 600);
         },
 
         render: function() {
@@ -3606,8 +3614,7 @@ return Backbone.LocalStorage;
         },
 
         newPlan: function() {
-            TinyPlanner.currentView = new TinyPlanner.Views.NewPlan();
-            TinyPlanner.router.navigate('plan/new');
+            TinyPlanner.currentView = new NewPlan();
         },
 
         render: function() {
@@ -3617,17 +3624,12 @@ return Backbone.LocalStorage;
         }
     });
 
-})();
 
-(function() {
-    'use strict';
-
-    var StepList,
-        StepItem;
-
-    TinyPlanner.Views.NewPlan = Backbone.View.extend({
+    NewPlan = Backbone.View.extend({
 
         el: '.tiny-planner',
+
+        className: 'panel',
         
         template: _.template( $("#template-new-plan").html() ),
 
@@ -3638,6 +3640,7 @@ return Backbone.LocalStorage;
 
         initialize: function () {
             this.$el.html( this.template() );
+            this.$('[name="plan-name"]').focus();
         },
 
         createPlan: function( event ) {
@@ -3657,14 +3660,18 @@ return Backbone.LocalStorage;
 
             TinyPlanner.Plans.add(plan);
 
-            //
-            this.$('[name=plan-name]').val('');
-
-            TinyPlanner.currentView = new TinyPlanner.Views.Index();
-            TinyPlanner.router.navigate('');
+            new TinyPlanner.Views.Index();
         },
 
     });
+
+})();
+
+(function() {
+    'use strict';
+
+
+    
 
 })();
 
@@ -3685,6 +3692,7 @@ return Backbone.LocalStorage;
 
         initialize: function () {
             this.$el.html( this.template() );
+            this.$('[name="step-title"]').focus();
 
             this.model.getSteps();
         },
@@ -3724,7 +3732,7 @@ return Backbone.LocalStorage;
 
         close: function() {
             TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: this.model });
-            TinyPlanner.router.navigate('plan/'+plan.id );
+            // TinyPlanner.router.navigate('plan/'+plan.id );
         }
 
     });
@@ -3755,7 +3763,13 @@ return Backbone.LocalStorage;
 
             new TinyPlanner.Views.StepList({ model: this.model, collection: this.model.steps }).render();
             new AddStep({ model: this.model, collection: this.model.steps }).render();
-            this.$el.append(new PlanOverview({ model: this.model }).render().el);
+            
+            var overview = new PlanOverview({ model: this.model });
+            this.$el.append(overview.render().el);
+
+            setTimeout(function() {
+                overview.$el.css('-webkit-transform', 'translate3d(0,0,0)');
+            }, 500);
         },
 
         goBack: function() {
@@ -3838,13 +3852,7 @@ return Backbone.LocalStorage;
             plan.fetch();
             plan.getSteps();
 
-            var height = $step.outerHeight();
-            $step.css('height', height+'px' );
             $step.addClass('deleting');
-            
-            setTimeout(function() {
-                $step.css('height', 0);
-            }, 20);
             
             setTimeout(function() {
                 $step.remove();
@@ -3854,7 +3862,7 @@ return Backbone.LocalStorage;
 
                 // remove the step
                 self.model.destroy();
-            }, 320);
+            }, 600);
         },
 
         render: function() {
@@ -3926,17 +3934,10 @@ return Backbone.LocalStorage;
             });
         },
 
-        newPlan: function() {
-            TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
-
-            TinyPlanner.Plans.fetch().then(function() {
-                TinyPlanner.currentView = new TinyPlanner.Views.NewPlan();
-            });
-
-        },
-
         viewPlan: function(id) {
             TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
+            TinyPlanner.Plans.fetch()
+
             var plan = new TinyPlanner.Models.Plan();
 
             if(id) {
@@ -3950,6 +3951,8 @@ return Backbone.LocalStorage;
 
         newStep: function(id) {
             TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
+            TinyPlanner.Plans.fetch()
+
             var plan = new TinyPlanner.Models.Plan();
 
             if(id) {
