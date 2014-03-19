@@ -27,7 +27,7 @@ html, body, div, h1, h2, h3, h4, p, code, pre, strong, em, b, i, ul, ol, li, sec
 }
 
 html {
-    background-color: #fff;
+    background-color: #F5F5F5;
     height: 100%;
 }
 body {
@@ -60,13 +60,12 @@ ul, ol, li {
 
 /** Layout **/
 
-[role="main"], .tiny-planner, .page {
+[role="main"], .tiny-planner, .panel {
   height: 100%;
 }
 
 .tiny-planner {
     position: relative;
-    overflow: hidden;
 }
 
 .page {
@@ -189,8 +188,8 @@ ul, ol, li {
     background: url('../../img/plus.svg') 50% 0 no-repeat;
     background-size: 47px;
     text-align: center;
-    margin-top: 120px;
-    padding: 55px 0 0 0;
+    margin-top: 20px;
+    padding: 55px 0 10px 0;
     cursor: default;
 }
 
@@ -242,10 +241,16 @@ ul, ol, li {
 }
 
 .view-plan {
+    padding-bottom: 155px;
+
     .plan-header {
-        padding: 18px 0;
+        position: fixed;
+        top: 0;
         background-color: $orange;
         color: #fff;
+        width: 100%;
+        padding: 18px 0;
+        z-index: 10;
 
         .back {
             position: absolute;
@@ -253,6 +258,7 @@ ul, ol, li {
             background-size: 45%;
             width: 32px;
             height: 32px;
+            z-index: 10;
         }
 
         .plan-title {
@@ -266,9 +272,14 @@ ul, ol, li {
             }
         }
     }
+
+    .plan-steps {
+        margin-top: 68px;
+    }
 }
 
 .new-step {
+    background-color: #fff;
     padding-top: 70px;
 
     input[type="text"] {
@@ -372,14 +383,14 @@ ul, ol, li {
 }
 
 .plan-overview {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     color: #fff;
     background-color: $orange;
     width: 100%;
 
-    -webkit-transform: translate3d(0, 155px, 0);
-    -webkit-transition: -webkit-transform .5s ease;
+    // -webkit-transform: translate3d(0, 155px, 0);
+    // -webkit-transition: -webkit-transform .5s ease;
 
     .container {
         padding: 20px 0;

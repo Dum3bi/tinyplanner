@@ -13,6 +13,7 @@
 
         index: function() {
             TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
+            TinyPlanner.Plans.fetch();
 
             TinyPlanner.Plans.fetch().then(function() {
                 TinyPlanner.currentView = new TinyPlanner.Views.Index();

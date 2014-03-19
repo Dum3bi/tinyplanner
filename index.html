@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <title>TinyPlanner &#183; Work out when you need to start something</title>
 
@@ -75,7 +75,7 @@
         </script>
 
         <script type="text/template" id="template-new-plan">
-            <div class="page orange">
+            <div class="panel orange">
                 <div class="inner">
                     <div class="new-plan">
                         <label>Name your plan</label>
@@ -101,7 +101,7 @@
         </script>
 
         <script type="text/template" id="template-new-step">
-            <div class="new-step">
+            <div class="new-step panel">
                 <div class="inner">
                     <div class="close"></div>
 
@@ -115,6 +115,20 @@
                     </div>
 
                     <button>Save Step</button>
+                </div>
+            </div>
+        </script>
+
+        <script type="text/template" id="template-step-edit-duration">
+            <div class="edit-duration panel">
+                <div class="inner">
+                    <div class="close"></div>
+
+                    <div class="blobs">
+                        
+                    </div>
+
+                    <button>Done</button>
                 </div>
             </div>
         </script>

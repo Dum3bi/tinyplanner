@@ -3512,6 +3512,8 @@ return Backbone.LocalStorage;
         },
 
         renderPlan: function(plan) {
+            plan.getSteps();
+            
             var elm = new PlanItem({ model: plan }).render().el
 
             this.$el.append( elm );
@@ -3519,8 +3521,16 @@ return Backbone.LocalStorage;
             var $elm = $(elm).find('.cover-panel');
 
             // HAMMER!
-            Hammer($elm.get(0)).on('release dragleft swipeleft', function(e) {
+            Hammer($elm.get(0)).on('tap release dragleft swipeleft', function(e) {
                 // e.gesture.preventDefault();
+
+                if(e.type == 'tap') {
+                    e.gesture.preventDefault();
+                    e.gesture.stopPropagation();
+
+                    TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: plan });
+                    TinyPlanner.router.navigate('plan/'+plan.id);
+                }
 
                 if(e.type == 'dragleft') {
                     $elm.removeClass('animate');
@@ -3565,13 +3575,7 @@ return Backbone.LocalStorage;
         template: _.template( $("#template-plan").html() ),
 
         events: {
-            'click .cover-panel': 'loadPlan',
             'click .delete': 'deletePlan'
-        },
-
-        loadPlan: function() {
-            TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: this.model });
-            TinyPlanner.router.navigate('plan/'+this.model.id);
         },
 
         deletePlan: function() {
@@ -3597,7 +3601,7 @@ return Backbone.LocalStorage;
 
         render: function() {
             this.$el.html( this.template( { plan: this.model } ) );
-            
+
             return this;
         },
     });
@@ -3752,11 +3756,13 @@ return Backbone.LocalStorage;
         
         template: _.template( $("#template-view-plan").html() ),
 
-        events: {
-            'click .back': 'goBack'
-        },
+        // events: {
+        //     'click .back': 'goBack'
+        // },
 
         initialize: function() {
+            var self = this;
+
             this.$el.html( this.template({ plan: this.model }) );
 
             this.model.getSteps();
@@ -3767,9 +3773,14 @@ return Backbone.LocalStorage;
             var overview = new PlanOverview({ model: this.model });
             this.$el.append(overview.render().el);
 
-            setTimeout(function() {
-                overview.$el.css('-webkit-transform', 'translate3d(0,0,0)');
-            }, 500);
+            Hammer($('.back').get(0)).on('tap', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                // self.goBack();
+                TinyPlanner.currentView = new TinyPlanner.Views.Index();
+                TinyPlanner.router.navigate('');
+            });
         },
 
         goBack: function() {
@@ -3796,7 +3807,7 @@ return Backbone.LocalStorage;
 
             // HAMMER!
             Hammer($elm.get(0)).on('release dragleft swipeleft', function(e) {
-                e.gesture.preventDefault();
+                // e.gesture.preventDefault();
 
                 if(e.type == 'dragleft') {
                     $elm.removeClass('animate');
@@ -3928,6 +3939,7 @@ return Backbone.LocalStorage;
 
         index: function() {
             TinyPlanner.Plans = new TinyPlanner.Collections.Plans();
+            TinyPlanner.Plans.fetch();
 
             TinyPlanner.Plans.fetch().then(function() {
                 TinyPlanner.currentView = new TinyPlanner.Views.Index();

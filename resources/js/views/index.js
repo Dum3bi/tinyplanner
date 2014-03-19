@@ -31,6 +31,8 @@
         },
 
         renderPlan: function(plan) {
+            plan.getSteps();
+            
             var elm = new PlanItem({ model: plan }).render().el
 
             this.$el.append( elm );
@@ -38,8 +40,16 @@
             var $elm = $(elm).find('.cover-panel');
 
             // HAMMER!
-            Hammer($elm.get(0)).on('release dragleft swipeleft', function(e) {
+            Hammer($elm.get(0)).on('tap release dragleft swipeleft', function(e) {
                 // e.gesture.preventDefault();
+
+                if(e.type == 'tap') {
+                    e.gesture.preventDefault();
+                    e.gesture.stopPropagation();
+
+                    TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: plan });
+                    TinyPlanner.router.navigate('plan/'+plan.id);
+                }
 
                 if(e.type == 'dragleft') {
                     $elm.removeClass('animate');
@@ -84,13 +94,7 @@
         template: _.template( $("#template-plan").html() ),
 
         events: {
-            'click .cover-panel': 'loadPlan',
             'click .delete': 'deletePlan'
-        },
-
-        loadPlan: function() {
-            TinyPlanner.currentView = new TinyPlanner.Views.Plan({ model: this.model });
-            TinyPlanner.router.navigate('plan/'+this.model.id);
         },
 
         deletePlan: function() {
@@ -116,7 +120,7 @@
 
         render: function() {
             this.$el.html( this.template( { plan: this.model } ) );
-            
+
             return this;
         },
     });

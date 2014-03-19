@@ -12,11 +12,13 @@
         
         template: _.template( $("#template-view-plan").html() ),
 
-        events: {
-            'click .back': 'goBack'
-        },
+        // events: {
+        //     'click .back': 'goBack'
+        // },
 
         initialize: function() {
+            var self = this;
+
             this.$el.html( this.template({ plan: this.model }) );
 
             this.model.getSteps();
@@ -27,9 +29,14 @@
             var overview = new PlanOverview({ model: this.model });
             this.$el.append(overview.render().el);
 
-            setTimeout(function() {
-                overview.$el.css('-webkit-transform', 'translate3d(0,0,0)');
-            }, 500);
+            Hammer($('.back').get(0)).on('tap', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                // self.goBack();
+                TinyPlanner.currentView = new TinyPlanner.Views.Index();
+                TinyPlanner.router.navigate('');
+            });
         },
 
         goBack: function() {
@@ -56,7 +63,7 @@
 
             // HAMMER!
             Hammer($elm.get(0)).on('release dragleft swipeleft', function(e) {
-                e.gesture.preventDefault();
+                // e.gesture.preventDefault();
 
                 if(e.type == 'dragleft') {
                     $elm.removeClass('animate');
